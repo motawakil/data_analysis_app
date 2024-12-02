@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Visualisation des Résultats{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar Controls -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Configuration du Graphique</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Chart Type Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Type de Graphique</label>
+                        <select class="form-select" id="chartType">
+                            <option value="scatter">Graphique de dispersion</option>
+                            <option value="histogram">Histogramme</option>
+                            <option value="line">Courbe d'apprentissage</option>
+                            <option value="bar">Diagramme en barres</option>
+                        </select>
+                    </div>
+
+                    <!-- Axis Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Axe X</label>
+                        <select class="form-select mb-2" id="xAxis">
+                            <option value="">Sélectionner une variable</option>
+                        </select>
+
+                        <label class="form-label">Axe Y</label>
+                        <select class="form-select" id="yAxis">
+                            <option value="">Sélectionner une variable</option>
+                        </select>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-4">
+                        <label class="form-label">Filtres</label>
+                        <div class="filter-container">
+                            <div class="filter-item mb-2">
+                                <select class="form-select mb-2">
+                                    <option value="">Sélectionner une variable</option>
+                                </select>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Valeur">
+                                    <button class="btn btn-outline-danger" type="button">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mt-2" id="addFilter">
+                            <i class="fas fa-plus me-2"></i>Ajouter un filtre
+                        </button>
+                    </div>
+
+                    <!-- Model Selection for Comparison -->
+                    <div class="mb-4">
+                        <label class="form-label">Comparer avec</label>
+                        <select class="form-select" id="compareModel">
+                            <option value="">Sélectionner un modèle</option>
+                            <option value="model1">Modèle 1</option>
+                            <option value="model2">Modèle 2</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" id="updateChart">
+                            <i class="fas fa-sync-alt me-2"></i>Mettre à jour
+                        </button>
+                        <button class="btn btn-outline-primary" id="exportChart">
+                            <i class="fas fa-download me-2"></i>Exporter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chart Area -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Visualisation</h5>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary btn-sm" id="zoomIn">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" id="zoomOut">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" id="resetZoom">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 70vh;">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Statistiques</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h6>Moyenne</h6>
+                                <span class="stat-value" id="meanValue">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h6>Médiane</h6>
+                                <span class="stat-value" id="medianValue">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h6>Écart-type</h6>
+                                <span class="stat-value" id="stdValue">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h6>Corrélation</h6>
+                                <span class="stat-value" id="correlationValue">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- html2canvas for chart export -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+<script src="{{ url_for('static', filename='js/visualization.js') }}"></script>
+{% endblock %}

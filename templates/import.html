@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Importation des Données{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Importation des Données</h1>
+    
+    <!-- File Upload Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Zone de Téléchargement</h5>
+            <div class="upload-zone" id="dropZone">
+                <input type="file" id="fileInput" class="d-none" accept=".csv,.xlsx,.xls,.json">
+                <div class="text-center py-5">
+                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                    <p class="mb-2">Glissez votre fichier ici ou</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Importer un fichier
+                    </button>
+                    <p class="text-muted mt-2">Formats acceptés: CSV, Excel, JSON</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Preview Section -->
+    <div class="card mb-4 d-none" id="previewSection">
+        <div class="card-body">
+            <h5 class="card-title">Aperçu des Données</h5>
+            <div class="table-responsive">
+                <table class="table table-striped" id="previewTable">
+                    <thead>
+                        <tr id="tableHeader"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Processing Options -->
+    <div class="card mb-4 d-none" id="processingOptions">
+        <div class="card-body">
+            <h5 class="card-title">Options de Traitement</h5>
+            
+            <!-- Basic Options -->
+            <div class="mb-3">
+                <button class="btn btn-outline-primary me-2" id="btnClean">
+                    <i class="fas fa-broom me-2"></i>Nettoyer les Données
+                </button>
+                <button class="btn btn-outline-primary" id="btnFillMissing">
+                    <i class="fas fa-magic me-2"></i>Remplir les Valeurs Manquantes
+                </button>
+            </div>
+
+            <!-- Advanced Options -->
+            <div class="mb-3">
+                <h6>Options Avancées</h6>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="normalizeCheck">
+                    <label class="form-check-label" for="normalizeCheck">
+                        Normaliser les données
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-success" id="btnApplyTransformations">
+                <i class="fas fa-check me-2"></i>Appliquer les transformations
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="d-flex justify-content-between">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+        <button class="btn btn-primary" id="btnNext" disabled>
+            Suivant<i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<!-- Add custom CSS for this page -->
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/import.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Analyse de Données ML{% endblock %}
+
+{% block content %}
+<div class="hero-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">Application d'analyse de données avec Machine Learning</h1>
+                <p class="lead mb-4">Découvrez la puissance de l'analyse de données et du machine learning avec notre application intuitive.</p>
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('import_data') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-upload me-2"></i>Commencer
+                    </a>
+                    <a href="{{ url_for('documentation') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>En savoir plus
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Importation des Données</h5>
+                        <p class="card-text">Importez facilement vos données depuis différentes sources pour commencer votre analyse.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Analyse et Modèles</h5>
+                        <p class="card-text">Utilisez des modèles de machine learning puissants pour analyser vos données.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Visualisation</h5>
+                        <p class="card-text">Visualisez vos résultats avec des graphiques interactifs et des tableaux de bord.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Notre Équipe{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Notre Équipe</h1>
+    
+    <div class="row justify-content-center">
+        <!-- Premier membre -->
+        <div class="col-md-5">
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="{{ url_for('static', filename='images/member1.jpg') }}" alt="Membre 1" class="img-fluid">
+                </div>
+                <div class="team-info">
+                    <h3>Nom du Membre 1</h3>
+                    <p class="role">Data Scientist & ML Engineer</p>
+                    <p class="description">
+                        Spécialisé dans le développement d'algorithmes de machine learning 
+                        et l'analyse de données complexes.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/membre1" class="social-link linkedin" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com/membre1" class="social-link github" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="{{ url_for('static', filename='cv/cv_membre1.pdf') }}" 
+                           class="btn btn-outline-primary download-cv">
+                            <i class="fas fa-download me-2"></i>Télécharger CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deuxième membre -->
+        <div class="col-md-5">
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="{{ url_for('static', filename='images/member2.jpg') }}" alt="Membre 2" class="img-fluid">
+                </div>
+                <div class="team-info">
+                    <h3>Nom du Membre 2</h3>
+                    <p class="role">Full Stack Developer</p>
+                    <p class="description">
+                        Expert en développement web et intégration de solutions 
+                        machine learning dans des applications web modernes.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/membre2" class="social-link linkedin" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com/membre2" class="social-link github" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="{{ url_for('static', filename='cv/cv_membre2.pdf') }}" 
+                           class="btn btn-outline-primary download-cv">
+                            <i class="fas fa-download me-2"></i>Télécharger CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

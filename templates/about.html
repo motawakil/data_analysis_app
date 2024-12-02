@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}À Propos de Nous{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">À Propos de Nous</h1>
+    
+    <div class="row justify-content-center">
+        <!-- Premier étudiant -->
+        <div class="col-md-5 mb-4">
+            <div class="about-card text-center">
+                <img src="{{ url_for('static', filename='images/1719562501326.jpeg') }}" 
+                     alt="Photo de l'étudiant 1" 
+                     class="profile-image">
+                <h2 class="student-name">Nom de l'Étudiant 1</h2>
+                <p class="student-title">Étudiant en Intelligence Artificielle</p>
+                <p class="student-description">
+                    Passionné par le machine learning et l'analyse de données. 
+                    Spécialisé dans le développement d'algorithmes et 
+                    l'implémentation de solutions d'IA.
+                </p>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/etudiant1" 
+                       class="social-link linkedin" 
+                       target="_blank" 
+                       title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/etudiant1" 
+                       class="social-link github" 
+                       target="_blank" 
+                       title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+                <a href="{{ url_for('static', filename='cv/cv_etudiant1.pdf') }}" 
+                   class="cv-button" 
+                   target="_blank">
+                    <i class="fas fa-download"></i>
+                    Télécharger CV
+                </a>
+            </div>
+        </div>
+
+        <!-- Deuxième étudiant -->
+        <div class="col-md-5 mb-4">
+            <div class="about-card text-center">
+                <img src="{{ url_for('static', filename='images/1719562501326.jpeg') }}" 
+                     alt="Photo de l'étudiant 2" 
+                     class="profile-image">
+                <h2 class="student-name">Nom de l'Étudiant 2</h2>
+                <p class="student-title">Étudiant en Développement Web</p>
+                <p class="student-description">
+                    Spécialisé dans le développement web et la création d'interfaces 
+                    utilisateur. Passionné par la création d'applications web 
+                    modernes et intuitives.
+                </p>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/etudiant2" 
+                       class="social-link linkedin" 
+                       target="_blank" 
+                       title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/etudiant2" 
+                       class="social-link github" 
+                       target="_blank" 
+                       title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+                <a href="{{ url_for('static', filename='cv/cv_etudiant2.pdf') }}" 
+                   class="cv-button" 
+                   target="_blank">
+                    <i class="fas fa-download"></i>
+                    Télécharger CV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="university-info">
+        <p>Projet réalisé dans le cadre de nos études à l'Université</p>
+        <p>Année Universitaire 2023-2024</p>
+    </div>
+</div>
+{% endblock %}

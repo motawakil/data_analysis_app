@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Exportation et Sauvegarde{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Exportation et Sauvegarde</h1>
+
+    <!-- Model Performance Summary -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Résumé des Performances</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Model Info -->
+                <div class="col-md-4">
+                    <div class="model-info-card">
+                        <h6 class="text-muted">Modèle Sélectionné</h6>
+                        <p class="model-name mb-2">Random Forest Classifier</p>
+                        <span class="badge bg-primary">Entraîné le 01/03/2024</span>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-card">
+                                <h6 class="text-muted">Accuracy</h6>
+                                <p class="metric-value">0.89</p>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 89%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-card">
+                                <h6 class="text-muted">Precision</h6>
+                                <p class="metric-value">0.92</p>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-card">
+                                <h6 class="text-muted">Recall</h6>
+                                <p class="metric-value">0.87</p>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 87%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-card">
+                                <h6 class="text-muted">F1 Score</h6>
+                                <p class="metric-value">0.90</p>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Options -->
+    <div class="row">
+        <!-- Results Export -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Exporter les Résultats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="export-options">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportMetrics" checked>
+                            <label class="form-check-label" for="exportMetrics">
+                                Métriques de performance
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportPredictions" checked>
+                            <label class="form-check-label" for="exportPredictions">
+                                Prédictions sur les données de test
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportCharts" checked>
+                            <label class="form-check-label" for="exportCharts">
+                                Graphiques et visualisations
+                            </label>
+                        </div>
+                        
+                        <div class="format-selection mt-4">
+                            <h6>Format d'exportation</h6>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="exportFormat" id="csvFormat" checked>
+                                <label class="btn btn-outline-primary" for="csvFormat">
+                                    <i class="fas fa-file-csv me-2"></i>CSV
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="exportFormat" id="pdfFormat">
+                                <label class="btn btn-outline-primary" for="pdfFormat">
+                                    <i class="fas fa-file-pdf me-2"></i>PDF
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 mt-4" id="downloadResults">
+                            <i class="fas fa-download me-2"></i>Télécharger les Résultats
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Export -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Exporter le Modèle</h5>
+                </div>
+                <div class="card-body">
+                    <div class="model-export-options">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportWeights" checked>
+                            <label class="form-check-label" for="exportWeights">
+                                Poids du modèle
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportArchitecture" checked>
+                            <label class="form-check-label" for="exportArchitecture">
+                                Architecture du modèle
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="exportHyperparameters" checked>
+                            <label class="form-check-label" for="exportHyperparameters">
+                                Hyperparamètres
+                            </label>
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Le modèle sera exporté au format pickle (.pkl)
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 mt-4" id="downloadModel">
+                            <i class="fas fa-download me-2"></i>Télécharger le Modèle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export History -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Historique des Exportations</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Format</th>
+                            <th>Taille</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01/03/2024 14:30</td>
+                            <td>Résultats</td>
+                            <td>PDF</td>
+                            <td>2.4 MB</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>01/03/2024 14:28</td>
+                            <td>Modèle</td>
+                            <td>PKL</td>
+                            <td>156 KB</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/export.js') }}"></script>
+{% endblock %}

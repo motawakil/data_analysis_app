@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Analyse et Modèles{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Analyse et Modèles</h1>
+
+    <div class="row">
+        <!-- Algorithm Selection Card -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Sélection de l'Algorithme</h5>
+                </div>
+                <div class="card-body">
+                    <div class="algorithm-selection">
+                        <div class="nav flex-column nav-pills" role="tablist">
+                            <div class="accordion" id="algorithmsAccordion">
+                                <!-- Regression -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#regressionCollapse">
+                                            Régression
+                                        </button>
+                                    </h2>
+                                    <div id="regressionCollapse" class="accordion-collapse collapse show" data-bs-parent="#algorithmsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="nav flex-column nav-pills">
+                                                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#linearParams">Régression Linéaire</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#logisticParams">Régression Logistique</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#polynomialParams">Régression Polynomiale</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Clustering -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#clusteringCollapse">
+                                            Clustering
+                                        </button>
+                                    </h2>
+                                    <div id="clusteringCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="nav flex-column nav-pills">
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#kmeansParams">K-Means</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#knnParams">K-NN</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#advancedCollapse">
+                                            Avancé
+                                        </button>
+                                    </h2>
+                                    <div id="advancedCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="nav flex-column nav-pills">
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#svmParams">SVM</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#decisionTreeParams">Arbres de décision</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#randomForestParams">Random Forest</button>
+                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#neuralNetParams">Réseaux de neurones</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parameters Card -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Paramètres du Modèle</h5>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2" id="btnReset">
+                            <i class="fas fa-undo me-2"></i>Réinitialiser
+                        </button>
+                        <button class="btn btn-primary" id="btnTrain">
+                            <i class="fas fa-play me-2"></i>Entraîner le Modèle
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <!-- Linear Regression Parameters -->
+                        <div class="tab-pane fade show active" id="linearParams">
+                            <h6 class="mb-3">Régression Linéaire</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Variables indépendantes</label>
+                                <select class="form-select" multiple>
+                                    <option>Variable 1</option>
+                                    <option>Variable 2</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Variable dépendante</label>
+                                <select class="form-select">
+                                    <option>Variable cible</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- K-Means Parameters -->
+                        <div class="tab-pane fade" id="kmeansParams">
+                            <h6 class="mb-3">K-Means Clustering</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre de clusters (K)</label>
+                                <input type="number" class="form-control" min="2" value="3">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre maximum d'itérations</label>
+                                <input type="number" class="form-control" min="1" value="300">
+                            </div>
+                        </div>
+
+                        <!-- Neural Network Parameters -->
+                        <div class="tab-pane fade" id="neuralNetParams">
+                            <h6 class="mb-3">Réseau de Neurones</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Couches cachées</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" placeholder="Neurones">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Taux d'apprentissage</label>
+                                <input type="number" class="form-control" min="0.0001" max="1" step="0.0001" value="0.001">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Époques</label>
+                                <input type="number" class="form-control" min="1" value="100">
+                            </div>
+                        </div>
+
+                        <!-- Other algorithm parameters... -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Résultats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="metric-card mb-3">
+                                <h6>Accuracy</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="metric-card mb-3">
+                                <h6>Precision</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="metric-card mb-3">
+                                <h6>Recall</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="metric-card mb-3">
+                                <h6>F1 Score</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analysis.js') }}"></script>
+{% endblock %}
