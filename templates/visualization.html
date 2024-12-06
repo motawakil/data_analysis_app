@@ -11,6 +11,22 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">Configuration du Graphique</h5>
                 </div>
+                <!-- File Selection -->
+<div class="mb-4">
+    <label class="form-label" >     Fichier à Visualiser</label>
+    <div class="input-group">
+        <select class="form-select" id="fileSelect">
+            <option value="">Sélectionner un fichier</option>
+            {% for file in uploaded_files %}
+            <option value="{{ file.id }}">{{ file.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-primary" type="button" id="refreshFileList">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+    <small class="text-muted">Sélectionnez le fichier que vous souhaitez analyser</small>
+</div>
                 <div class="card-body">
                     <!-- Chart Type Selection -->
                     <div class="mb-4">
@@ -23,19 +39,47 @@
                         </select>
                     </div>
 
-                    <!-- Axis Selection -->
-                    <div class="mb-4">
-                        <label class="form-label">Axe X</label>
-                        <select class="form-select mb-2" id="xAxis">
-                            <option value="">Sélectionner une variable</option>
-                        </select>
 
-                        <label class="form-label">Axe Y</label>
-                        <select class="form-select" id="yAxis">
-                            <option value="">Sélectionner une variable</option>
-                        </select>
-                    </div>
+                    <!-- Axis Selection with Steps -->
+<div class="mb-4">
+    <label class="form-label">Axe X</label>
+    <select class="form-select mb-2" id="xAxis">
+        <option value="">Sélectionner une variable</option>
+    </select>
+    <div class="row g-2 mb-3">
+        <div class="col-6">
+            <label class="form-label small">Valeur Min</label>
+            <input type="number" class="form-control form-control-sm" id="xAxisMin" placeholder="Min">
+        </div>
+        <div class="col-6">
+            <label class="form-label small">Valeur Max</label>
+            <input type="number" class="form-control form-control-sm" id="xAxisMax" placeholder="Max">
+        </div>
+        <div class="col-12">
+            <label class="form-label small">Pas</label>
+            <input type="number" class="form-control form-control-sm" id="xAxisStep" placeholder="Pas" min="0.1" step="0.1" value="10">
+        </div>
+    </div>
 
+    <label class="form-label">Axe Y</label>
+    <select class="form-select mb-2" id="yAxis">
+        <option value="">Sélectionner une variable</option>
+    </select>
+    <div class="row g-2">
+        <div class="col-6">
+            <label class="form-label small">Valeur Min</label>
+            <input type="number" class="form-control form-control-sm" id="yAxisMin" placeholder="Min">
+        </div>
+        <div class="col-6">
+            <label class="form-label small">Valeur Max</label>
+            <input type="number" class="form-control form-control-sm" id="yAxisMax" placeholder="Max">
+        </div>
+        <div class="col-12">
+            <label class="form-label small">Pas</label>
+            <input type="number" class="form-control form-control-sm" id="yAxisStep" placeholder="Pas" min="0.1" step="0.1"  value="10">
+        </div>
+    </div>
+</div>
                     <!-- Filters -->
                     <div class="mb-4">
                         <label class="form-label">Filtres</label>
@@ -69,6 +113,9 @@
 
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2">
+                        <button class="btn btn-primary" id="btnTrain">
+                            <i class="fas fa-play me-2"></i>Visualiser les données
+                        </button>
                         <button class="btn btn-primary" id="updateChart">
                             <i class="fas fa-sync-alt me-2"></i>Mettre à jour
                         </button>
@@ -107,9 +154,21 @@
             </div>
 
             <!-- Statistics Panel -->
+             
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Statistiques</h5>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">   Choisissez un variable pour obtenir les statistiques </label>
+                    <div class="input-group">
+                        <select class="form-select" id="fileSelect">
+                            <option value="">   Sélectionner un variable </option>
+                            {% for file in uploaded_files %}
+                            <option value="{{ file.id }}">{{ file.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
