@@ -93,23 +93,86 @@
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
+
+
                         <!-- Linear Regression Parameters -->
-                        <div class="tab-pane fade show active" id="linearParams">
-                            <h6 class="mb-3">Régression Linéaire</h6>
-                            <div class="mb-3">
-                                <label class="form-label">Variables indépendantes</label>
-                                <select class="form-select" multiple>
-                                    <option>Variable 1</option>
-                                    <option>Variable 2</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Variable dépendante</label>
-                                <select class="form-select">
-                                    <option>Variable cible</option>
-                                </select>
-                            </div>
-                        </div>
+
+
+<div class="tab-pane fade show active" id="linearParams">
+    <h6 class="mb-3">Régression Linéaire</h6>
+
+    <!-- Independent Variables -->
+    <div class="mb-3">
+        <label class="form-label">
+            Variables indépendantes 
+            <a href="https://example.com/docs/independent-variables" target="_blank" title="En savoir plus">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </label>
+        <select class="form-select" multiple>
+            <option>Variable 1</option>
+            <option>Variable 2</option>
+            <option>Variable 3</option>
+            <option>Variable 4</option>
+        </select>
+    </div>
+
+    <!-- Dependent Variable -->
+    <div class="mb-3">
+        <label class="form-label">
+            Variable dépendante 
+            <a href="https://example.com/docs/dependent-variable" target="_blank" title="En savoir plus">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </label>
+        <select class="form-select">
+            <option>Variable cible</option>
+            <option>Variable 5</option>
+        </select>
+    </div>
+
+    <!-- Fit Intercept -->
+    <div class="mb-3">
+        <label class="form-label">
+            Inclure l'ordonnée à l'origine (fit_intercept) 
+            <a href="https://example.com/docs/fit-intercept" target="_blank" title="En savoir plus">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </label>
+        <select class="form-select">
+            <option value="true">Oui</option>
+            <option value="false">Non</option>
+        </select>
+    </div>
+
+    <!-- Normalize -->
+    <div class="mb-3">
+        <label class="form-label">
+            Normaliser les données (normalize) 
+            <a href="https://example.com/docs/normalize" target="_blank" title="En savoir plus">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </label>
+        <select class="form-select">
+            <option value="false">Non</option>
+            <option value="true">Oui</option>
+        </select>
+    </div>
+
+    <!-- Positive Coefficients -->
+    <div class="mb-3">
+        <label class="form-label">
+            Forcer des coefficients positifs (positive) 
+            <a href="https://example.com/docs/positive-coefficients" target="_blank" title="En savoir plus">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </label>
+        <select class="form-select">
+            <option value="false">Non</option>
+            <option value="true">Oui</option>
+        </select>
+    </div>
+
 
                         <!-- K-Means Parameters -->
                         <div class="tab-pane fade" id="kmeansParams">
@@ -124,32 +187,56 @@
                             </div>
                         </div>
 
-                        <!-- Neural Network Parameters -->
-                        <div class="tab-pane fade" id="neuralNetParams">
-                            <h6 class="mb-3">Réseau de Neurones</h6>
-                            <div class="mb-3">
-                                <label class="form-label">Couches cachées</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" placeholder="Neurones">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Taux d'apprentissage</label>
-                                <input type="number" class="form-control" min="0.0001" max="1" step="0.0001" value="0.001">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Époques</label>
-                                <input type="number" class="form-control" min="1" value="100">
-                            </div>
-                        </div>
-
                         <!-- Other algorithm parameters... -->
                     </div>
                 </div>
             </div>
+
+
+      <!-- Split Method Selection -->
+
+            <div class="tab-pane fade show active" id="linearParams">
+               
+                <div class="mb-3">
+                    <label class="form-label">
+                        Méthode de découpage des données 
+                        <a href="https://example.com/docs/split-methods" target="_blank" title="En savoir plus">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </label>
+                    <select id="splitMethod" class="form-select">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="kfold">Validation Croisée (k-fold)</option>
+                        <option value="holdout">Découpage Hold-Out</option>
+                    </select>
+                </div>
+            
+                <!-- k-Fold Input -->
+                <div id="kfoldInput" class="mb-3" style="display: none;">
+                    <label class="form-label">
+                        Nombre de folds (k-fold) 
+                        <a href="https://example.com/docs/k-fold" target="_blank" title="En savoir plus">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </label>
+                    <input type="number" class="form-control" min="2" max="10" step="1" value="5">
+                </div>
+            
+                <!-- Hold-Out Split Input -->
+                <div id="holdoutInput" class="mb-3" style="display: none;">
+                    <label class="form-label">
+                        Pourcentage pour le test (Hold-Out Split) 
+                        <a href="https://example.com/docs/holdout-split" target="_blank" title="En savoir plus">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </label>
+                    <input type="number" class="form-control" min="0.1" max="0.9" step="0.1" value="0.2">
+                </div>
+            </div>
+            
+
+
+
 
             <!-- Results Card -->
             <div class="card mb-4">
@@ -196,10 +283,48 @@
                         </div>
                     </div>
                 </div>
+                <!-- Visualization Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Visualisation des Résultats</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary btn-sm" id="zoomIn">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" id="zoomOut">
+                                    <i class="fas fa-search-minus"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" id="resetZoom">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height: 400px;">
+                            <canvas id="modelVisualization"></canvas>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    
 </div>
+
+
+
+
+
+<!-- Confirm Model Button -->
+<div class="container text-center mb-4">
+    <button class="btn btn-success btn-lg" id="btnConfirmModel" style = "background-color:#3a6fc4">
+        <i class="fas fa-check-circle me-2"></i>Confirmer le modèle
+    </button>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
