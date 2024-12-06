@@ -4,3 +4,5 @@ Jinja2==3.1.2
 pandas==2.1.1
 numpy==1.26.0
 openpyxl==3.1.2  # For Excel file support
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.21
