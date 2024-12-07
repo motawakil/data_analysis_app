@@ -62,14 +62,43 @@ deactivate
 
 ```
 data_analysis_app/
-├── venv/                   # Virtual environment
-├── static/                 # Static files (CSS, JS, images)
-│   ├── css/
-│   └── js/
-├── templates/              # HTML templates
-│   ├── base.html
-│   └── home.html
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+├── app/                            # Main application package
+│   ├── __init__.py                # App initialization and configuration
+│   ├── MLmodels/                  # Machine Learning models
+│   │   └── MLmodel.py            # ML model implementations
+│   ├── database/                  # Database related code
+│   │   ├── __init__.py
+│   │   ├── db.py                 # Database configuration
+│   │   └── models.py             # Database models
+│   ├── export/                    # Export functionality
+│   │   ├── __init__.py
+│   │   └── export_utils.py       # Export utilities
+│   ├── preprocessing/             # Data preprocessing
+│   │   └── preprocess.py         # Preprocessing functions
+│   ├── routes/                    # Application routes
+│   │   ├── data_routes.py        # Data handling endpoints
+│   │   ├── export_routes.py      # Export endpoints
+│   │   ├── training_routes.py    # ML training endpoints
+│   │   └── visualization_routes.py# Visualization endpoints
+│   └── visualization/             # Visualization code
+│       └── charts.py             # Chart generation
+├── static/                        # Static files
+│   └── js/                       # JavaScript files
+│       ├── analysis.js           # Analysis page functionality
+│       ├── export.js             # Export functionality
+│       └── import.js             # Import functionality
+├── templates/                     # HTML templates
+│   ├── about.html                # About page
+│   ├── analysis.html             # Data analysis page
+│   ├── base.html                 # Base template
+│   ├── documentation.html        # Documentation page
+│   ├── export.html               # Export page
+│   ├── home.html                 # Home page
+│   ├── import.html               # Import page
+│   └── visualization.html        # Visualization page
+├── uploads/                      # Directory for uploaded files
+├── app.py                        # Application entry point
+├── config.py                     # Configuration settings
+├── requirements.txt              # Project dependencies
+└── README.md                     # Project documentation
 ```

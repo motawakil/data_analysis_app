@@ -1,22 +1,21 @@
-from flask import Flask, render_template, request, jsonify
-import pandas as pd
+from flask import Flask, render_template
 import os
-from werkzeug.utils import secure_filename
+from app.routes.import_routes import data_bp
+from app.routes.export_routes import export_bp
+from app.routes.training_routes import training_bp
+from app.routes.visualization_routes import visualization_bp
 
 app = Flask(__name__)
 
 # Configuration
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'json'}
 
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Routes for main pages (Main Routes)
 
-# Routes for pages
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -45,6 +44,12 @@ def documentation():
 def about():
     return render_template('about.html')
 
-    
+# Register Blueprints
+app.register_blueprint(data_bp, url_prefix='/data')
+app.register_blueprint(export_bp, url_prefix= '/export')
+app.register_blueprint(training_bp, url_prefix='/training')
+app.register_blueprint(visualization_bp, url_prefix='/visualization')
+
+
 if __name__ == '__main__':
     app.run(debug=True)

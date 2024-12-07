@@ -7,8 +7,3 @@ visualization_bp = Blueprint('visualization', __name__)
 def visualization():
     return render_template('visualization.html')
 
-@visualization_bp.route('/api/visualize', methods=['POST'])
-def generate_visualization():
-    data = request.get_json()
-    chart = create_visualization(data)
-    return jsonify(chart)
