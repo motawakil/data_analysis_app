@@ -45,43 +45,6 @@ def documentation():
 def about():
     return render_template('about.html')
 
-# File upload route
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
     
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-    
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        try:
-            # Read and process the file based on its type
-            if filename.endswith('.csv'):
-                df = pd.read_csv(filepath)
-            elif filename.endswith(('.xlsx', '.xls')):
-                df = pd.read_excel(filepath)
-            elif filename.endswith('.json'):
-                df = pd.read_json(filepath)
-            
-            # Return basic file information
-            return jsonify({
-                'message': 'File uploaded successfully',
-                'filename': filename,
-                'shape': df.shape,
-                'columns': df.columns.tolist(),
-                'preview': df.head(5).to_dict('records')
-            })
-            
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
-    
-    return jsonify({'error': 'File type not allowed'}), 400
-
 if __name__ == '__main__':
     app.run(debug=True)

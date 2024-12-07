@@ -1,0 +1,49 @@
+/* Import Page Styles */
+.upload-zone {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-zone:hover {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.upload-zone.border-primary {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#previewTable th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+}
+
+/* Processing Options */
+.form-check {
+    margin-left: 1rem;
+}
+
+/* Animation for processing */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.processing {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.processing i {
+    animation: spin 1s linear infinite;
+}
