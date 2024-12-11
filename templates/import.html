@@ -37,39 +37,30 @@
                 </table>
             </div>
         </div>
+
     </div>
 
-    <!-- Data Processing Options -->
-    <div class="card mb-4 d-none" id="processingOptions">
-        <div class="card-body">
-            <h5 class="card-title">Options de Traitement</h5>
-            
-            <!-- Basic Options -->
-            <div class="mb-3">
-                <button class="btn btn-outline-primary me-2" id="btnClean">
-                    <i class="fas fa-broom me-2"></i>Nettoyer les Données
-                </button>
-                <button class="btn btn-outline-primary" id="btnFillMissing">
-                    <i class="fas fa-magic me-2"></i>Remplir les Valeurs Manquantes
-                </button>
-            </div>
 
-            <!-- Advanced Options -->
-            <div class="mb-3">
-                <h6>Options Avancées</h6>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="normalizeCheck">
-                    <label class="form-check-label" for="normalizeCheck">
-                        Normaliser les données
-                    </label>
-                </div>
-            </div>
 
-            <button class="btn btn-success" id="btnApplyTransformations">
-                <i class="fas fa-check me-2"></i>Appliquer les transformations
-            </button>
+
+
+
+<!-- Preview section (Table) -->
+<div class="card mb-4 d-none" id="previewSection">
+    <div class="card-body">
+        <h5 class="card-title">Aperçu des Données</h5>
+        <div class="table-responsive">
+            <table class="table table-striped" id="previewTable">
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
     </div>
+</div>
+
+
 
     <!-- Navigation -->
     <div class="d-flex justify-content-between">
@@ -77,19 +68,47 @@
             <i class="fas fa-arrow-left me-2"></i>Retour
         </a>
         <button class="btn btn-primary" id="btnNext" disabled>
-            Suivant<i class="fas fa-arrow-right ms-2"></i>
+            Valider le choix <i class="fas fa-arrow-right ms-2"></i>
         </button>
+    </div>
+
+
+<!-- Data information div -->
+<div class="card mb-4" id="dataInfoSection">
+    <div class="card-body">
+        <h5 class="card-title">Informations sur le Fichier</h5>
+        <p id="fileSize"></p>
+        <p id="numRows"></p>
+        <p id="numColumns"></p>
+        <p id="columnTypes"></p>
+        <p id="description"></p>
     </div>
 </div>
 
+
+
+</div>
+
+
+
+
+<!-- Progress Bar Section -->
+<div class="progress mb-3 d-none" id="progressBarContainer">
+    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+
+
 <!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/import.css') }}">
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <!-- Add custom CSS for this page -->
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/import.js') }}"></script>
+    <!-- PapaParse Library for CSV Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    
+    <!-- Your Custom JS File -->
+    <script src="{{ url_for('static', filename='js/import.js') }}"></script>
+
 {% endblock %}

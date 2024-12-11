@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 import os
-from app.routes.import_routes import data_bp
+from app.routes.import_routes import import_routes
 from app.routes.export_routes import export_bp
 from app.routes.training_routes import training_bp
 from app.routes.visualization_routes import visualization_bp
@@ -45,7 +45,7 @@ def about():
     return render_template('about.html')
 
 # Register Blueprints
-app.register_blueprint(data_bp, url_prefix='/data')
+app.register_blueprint(import_routes, url_prefix='/import_routes')
 app.register_blueprint(export_bp, url_prefix= '/export')
 app.register_blueprint(training_bp, url_prefix='/training')
 app.register_blueprint(visualization_bp, url_prefix='/visualization')
