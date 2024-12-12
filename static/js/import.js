@@ -7,23 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNext = document.getElementById('btnNext');
     const progressBar = document.getElementById('progressBar');
 
-    // New button and data information div
+    // New sections
     const btnShowDataInfo = document.getElementById('btnShowDataInfo');
     const dataInfoSection = document.getElementById('dataInfoSection');
-    const fileSizeDiv = document.getElementById('fileSize');
-    const numRowsDiv = document.getElementById('numRows');
-    const numColumnsDiv = document.getElementById('numColumns');
-    const columnTypesDiv = document.getElementById('columnTypes');
-    const descriptionDiv = document.getElementById('description');
+    const preprocessingDiv = document.getElementById('preprocessingResults');
+    const plotImageDiv = document.getElementById('plotImageDiv'); // Container for the image
 
     let dataLoaded = false;
 
     // Function to create table rows for preview
     function createTablePreview(data) {
-        tableHeader.innerHTML = ''; // Clear previous headers
-        tableBody.innerHTML = '';   // Clear previous rows
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
 
-        // Generate Table Headers
         const headers = Object.keys(data[0]);
         headers.forEach(header => {
             const th = document.createElement('th');
@@ -31,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tableHeader.appendChild(th);
         });
 
-        // Generate Table Rows
         data.forEach(row => {
             const tr = document.createElement('tr');
             headers.forEach(header => {
@@ -43,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to simulate progress bar
+    // Simulate progress bar
     function simulateProgressBar() {
         const progressBarFill = document.querySelector('.progress-bar');
         let progress = 0;
@@ -62,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle file input changes
+    // File input change handler
     fileInput.addEventListener('change', async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -75,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (file.name.endsWith('.json')) {
                         data = JSON.parse(fileContent);
                     } else if (file.name.endsWith('.csv')) {
-                        data = Papa.parse(fileContent, { header: true }).data; // Using PapaParse for CSV
+                        data = Papa.parse(fileContent, { header: true }).data;
                     } else {
                         alert('Format de fichier non supporté.');
                         return;
@@ -83,10 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (data.length > 0) {
                         previewSection.classList.remove('d-none');
-                        btnNext.disabled = true; // Initially disable during progress
-                        await simulateProgressBar(); // Simulate loading progress
-                        createTablePreview(data); // Load table preview
-                        btnNext.disabled = false; // Enable button after data loads
+                        btnNext.disabled = true;
+                        await simulateProgressBar();
+                        createTablePreview(data);
+                        btnNext.disabled = false;
                         dataLoaded = true;
                     }
                 } catch (error) {
@@ -98,160 +93,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle drag-and-drop events
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('border-primary');
-    });
+    // Handle file upload to backend
+    btnNext.addEventListener('click', () => {
+        if (dataLoaded) {
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
 
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('border-primary');
-    });
+            fetch('/import_routes/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
 
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('border-primary');
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            fileInput.files = e.dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-    });
-
-    
- // Existing imports and logic...
-
-const preprocessingDiv = document.getElementById('preprocessingResults'); // New section to show preprocessing results
-// Updated AJAX logic
-
-btnNext.addEventListener('click', () => {
-    if (dataLoaded) {
-        const formData = new FormData();
-        formData.append("file", fileInput.files[0]);
-
-        fetch('/import_routes/upload', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
- // Display file information
-if (data.file_info) {
-    dataInfoSection.classList.remove('d-none'); // Ensure section is visible
-    dataInfoSection.innerHTML = ''; // Clear previous content
-
-    // Create Table
-    const table = document.createElement('table');
-    table.classList.add('table', 'table-bordered', 'table-striped'); // Add Bootstrap table classes
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Attribut</th>
-                <th>Valeur</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Taille du fichier</td>
-                <td>${data.file_info.file_size} bytes</td>
-            </tr>
-            <tr>
-                <td>Type de fichier</td>
-                <td>${data.file_info.file_type}</td>
-            </tr>
-            <tr>
-                <td>Date d'importation</td>
-                <td>${data.file_info.upload_date}</td>
-            </tr>
-            <tr>
-                <td>Nombre de lignes</td>
-                <td>${data.file_info.num_rows}</td>
-            </tr>
-            <tr>
-                <td>Nombre de colonnes</td>
-                <td>${data.file_info.num_columns}</td>
-            </tr>
-            <tr>
-                <td>Types de données des colonnes</td>
-                <td>
-                    ${[...new Set(data.file_info.data_types)].join(', ')} 
-                    <!-- Avoid repetition using Set -->
-                </td>
-            </tr>
-        </tbody>
-    `;
-
-    // Append the table to the dataInfoSection
-    dataInfoSection.appendChild(table);
-}
-
-
-
-            // Display preprocessing results: Missing Values Table
-            if (data.preprocessing_results) {
-                preprocessingDiv.classList.remove('d-none'); // Unhide section
-                preprocessingDiv.innerHTML = '<h5>Valeurs Manquantes et Valeurs Uniques</h5>'; // Reset content
-
-                const totalMissing = data.preprocessing_results.missing_values?.total_missing || {};
-                const percentMissing = data.preprocessing_results.missing_values?.percent_missing || {};
-                const uniqueValues = data.preprocessing_results?.unique_values || {};
-
-                // Generate Table
-                const table = document.createElement('table');
-                table.classList.add('table', 'table-bordered', 'table-striped'); // Add Bootstrap table classes
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Nom de la Colonne</th>
-                            <th>Nombre de Valeurs Manquantes</th>
-                            <th>Pourcentage de Valeurs Manquantes (%)</th>
-                            <th>Nombre de Valeurs Uniques</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                `;
-
-                const tbody = table.querySelector('tbody');
-                
-                // Iterate over columns and append rows to the table
-                for (const column in totalMissing) {
-                    const row = document.createElement('tr');
-                    const missingValue = totalMissing[column] || 0;
-                    const missingPercent = percentMissing[column] || 0;
-                    const uniqueValueCount = uniqueValues[column] || 0;
-
-                    row.innerHTML = `
-                        <td>${column}</td>
-                        <td>${missingValue}</td>
-                        <td>${missingPercent.toFixed(2)}</td>
-                        <td>${uniqueValueCount}</td>
+                // File information display
+                if (data.file_info) {
+                    dataInfoSection.classList.remove('d-none');
+                    dataInfoSection.innerHTML = `
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr><th>Attribut</th><th>Valeur</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Taille du fichier</td><td>${data.file_info.file_size} bytes</td></tr>
+                                <tr><td>Type de fichier</td><td>${data.file_info.file_type}</td></tr>
+                                <tr><td>Date d'importation</td><td>${data.file_info.upload_date}</td></tr>
+                                <tr><td>Nombre de lignes</td><td>${data.file_info.num_rows}</td></tr>
+                                <tr><td>Nombre de colonnes</td><td>${data.file_info.num_columns}</td></tr>
+                                <tr><td>Types de données</td><td>${[...new Set(data.file_info.data_types)].join(', ')}</td></tr>
+                            </tbody>
+                        </table>
                     `;
-                    tbody.appendChild(row);
                 }
 
-                // Append the table to the preprocessingDiv
-                preprocessingDiv.appendChild(table);
-            }
+                // Display Preprocessing Results
+                if (data.preprocessing_results) {
+                    preprocessingDiv.classList.remove('d-none');
+                    preprocessingDiv.innerHTML = `
+                        <h5>Valeurs Manquantes et Valeurs Uniques</h5>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nom de la Colonne</th>
+                                    <th>Valeurs Manquantes</th>
+                                    <th>% Manquantes</th>
+                                    <th>Valeurs Uniques</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.keys(data.preprocessing_results.missing_values.total_missing).map(column => `
+                                    <tr>
+                                        <td>${column}</td>
+                                        <td>${data.preprocessing_results.missing_values.total_missing[column] || 0}</td>
+                                        <td>${(data.preprocessing_results.missing_values.percent_missing[column] || 0).toFixed(2)}%</td>
+                                        <td>${data.preprocessing_results.unique_values[column] || 0}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+                console.log(data.preprocessing_results.top_categorical_plot);
 
-            if (data.message) {
-                alert(data.message);
-            } else if (data.error) {
-                alert(data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Une erreur est survenue lors de l\'envoi du fichier.');
-        });
-    }
-});
+                // Display Top Categorical Plot (Image)
+                if (data.preprocessing_results.top_categorical_plot) {
+                    plotImageDiv.classList.remove('d-none');
+                    plotImageDiv.innerHTML = `
+                        <h5>Top 2 Frequent Categorical Values</h5>
+                        <img src="data:image/png;base64,${data.preprocessing_results.top_categorical_plot}" class="img-fluid" alt="Top Categorical Plot">
+                    `;
+                }
 
-    // New Button for showing data information
-    btnShowDataInfo.addEventListener('click', () => {
-        if (dataLoaded) {
-            // Toggle the visibility of the data info section
-            dataInfoSection.classList.toggle('d-none');
+                if (data.message) alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Une erreur est survenue lors de l\'envoi du fichier.');
+            });
         }
     });
 });
