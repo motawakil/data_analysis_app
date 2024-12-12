@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableHeader = document.getElementById('tableHeader');
     const tableBody = document.getElementById('tableBody');
     const btnNext = document.getElementById('btnNext');
+    const actionButtons = document.getElementById('actionButtons');
+
     const progressBar = document.getElementById('progressBar');
 
     // New sections
@@ -163,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h5>Top 2 Frequent Categorical Values</h5>
                         <img src="data:image/png;base64,${data.preprocessing_results.top_categorical_plot}" class="img-fluid" alt="Top Categorical Plot">
                     `;
+                   
                 }
 
                 if (data.message) alert(data.message);
@@ -173,4 +176,52 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    
+});
+
+
+// saving the page js code 
+// Event listener for "Download Page as PDF" button
+document.getElementById("downloadPageButton").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Set title for the PDF
+    doc.setFontSize(20);
+    doc.text("Data Importation Results", 20, 20);
+
+    let yOffset = 30; // Set starting Y position for content
+
+    // Capture the content of the card-body sections (tables and plot)
+    let content = document.querySelectorAll(".card-body");
+
+    // Iterate through all card content and add them to the PDF
+    content.forEach(function (section) {
+        // Add text content of the section to the PDF
+        doc.setFontSize(12);
+        doc.text(section.innerText || section.textContent, 20, yOffset);
+
+        // Adjust yOffset for the next section
+        yOffset += 20;
+    });
+
+    // Add the plot image if it exists
+    const plotImageDiv = document.getElementById('plotImageDiv');
+    if (plotImageDiv) {
+        let plotImage = plotImageDiv.querySelector('img');
+        if (plotImage) {
+            doc.addImage(plotImage.src, 'PNG', 20, yOffset, 180, 120);
+            yOffset += 130; // Adjust the Y position after adding the image
+        }
+    }
+
+    // Save the PDF with a filename
+    doc.save("importation_results.pdf");
+});
+
+// Event listener for "Save Dataset" button
+document.getElementById("saveDatasetButton").addEventListener("click", function () {
+    // Trigger the save dataset functionality by navigating to the server route
+    window.location.href = "/save_dataset";
 });
