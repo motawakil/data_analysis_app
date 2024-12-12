@@ -118,43 +118,134 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Button Event Handling for sending the file via AJAX
-    btnNext.addEventListener('click', () => {
-        if (dataLoaded) {
-            // Prepare the FormData object
-            const formData = new FormData();
-            formData.append("file", fileInput.files[0]);
+    
+ // Existing imports and logic...
 
-            // Send the file via AJAX (POST request)
-            fetch('/import_routes/upload', {  // Corrected URL path
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
+const preprocessingDiv = document.getElementById('preprocessingResults'); // New section to show preprocessing results
+// Updated AJAX logic
 
-                if (data.file_info) {
-                    // Display file information in the data info section
-                    fileSizeDiv.textContent = `Taille du fichier: ${data.file_info.file_size} bytes`;
-                    numRowsDiv.textContent = `Nombre de lignes: ${data.file_info.num_rows}`;
-                    numColumnsDiv.textContent = `Nombre de colonnes: ${data.file_info.num_columns}`;
-                    columnTypesDiv.textContent = `Types de données des colonnes: ${data.file_info.data_types.join(', ')}`;
-                    descriptionDiv.textContent = `Colonnes: ${data.file_info.columns.join(', ')}`;
+btnNext.addEventListener('click', () => {
+    if (dataLoaded) {
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        fetch('/import_routes/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+ // Display file information
+if (data.file_info) {
+    dataInfoSection.classList.remove('d-none'); // Ensure section is visible
+    dataInfoSection.innerHTML = ''; // Clear previous content
+
+    // Create Table
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-bordered', 'table-striped'); // Add Bootstrap table classes
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Attribut</th>
+                <th>Valeur</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Taille du fichier</td>
+                <td>${data.file_info.file_size} bytes</td>
+            </tr>
+            <tr>
+                <td>Type de fichier</td>
+                <td>${data.file_info.file_type}</td>
+            </tr>
+            <tr>
+                <td>Date d'importation</td>
+                <td>${data.file_info.upload_date}</td>
+            </tr>
+            <tr>
+                <td>Nombre de lignes</td>
+                <td>${data.file_info.num_rows}</td>
+            </tr>
+            <tr>
+                <td>Nombre de colonnes</td>
+                <td>${data.file_info.num_columns}</td>
+            </tr>
+            <tr>
+                <td>Types de données des colonnes</td>
+                <td>
+                    ${[...new Set(data.file_info.data_types)].join(', ')} 
+                    <!-- Avoid repetition using Set -->
+                </td>
+            </tr>
+        </tbody>
+    `;
+
+    // Append the table to the dataInfoSection
+    dataInfoSection.appendChild(table);
+}
+
+
+
+            // Display preprocessing results: Missing Values Table
+            if (data.preprocessing_results) {
+                preprocessingDiv.classList.remove('d-none'); // Unhide section
+                preprocessingDiv.innerHTML = '<h5>Valeurs Manquantes et Valeurs Uniques</h5>'; // Reset content
+
+                const totalMissing = data.preprocessing_results.missing_values?.total_missing || {};
+                const percentMissing = data.preprocessing_results.missing_values?.percent_missing || {};
+                const uniqueValues = data.preprocessing_results?.unique_values || {};
+
+                // Generate Table
+                const table = document.createElement('table');
+                table.classList.add('table', 'table-bordered', 'table-striped'); // Add Bootstrap table classes
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Nom de la Colonne</th>
+                            <th>Nombre de Valeurs Manquantes</th>
+                            <th>Pourcentage de Valeurs Manquantes (%)</th>
+                            <th>Nombre de Valeurs Uniques</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+
+                const tbody = table.querySelector('tbody');
+                
+                // Iterate over columns and append rows to the table
+                for (const column in totalMissing) {
+                    const row = document.createElement('tr');
+                    const missingValue = totalMissing[column] || 0;
+                    const missingPercent = percentMissing[column] || 0;
+                    const uniqueValueCount = uniqueValues[column] || 0;
+
+                    row.innerHTML = `
+                        <td>${column}</td>
+                        <td>${missingValue}</td>
+                        <td>${missingPercent.toFixed(2)}</td>
+                        <td>${uniqueValueCount}</td>
+                    `;
+                    tbody.appendChild(row);
                 }
 
-                if (data.message) {
-                    alert(data.message); // Show success message
-                } else if (data.error) {
-                    alert(data.error); // Show error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Une erreur est survenue lors de l\'envoi du fichier.');
-            });
-        }
-    });
+                // Append the table to the preprocessingDiv
+                preprocessingDiv.appendChild(table);
+            }
+
+            if (data.message) {
+                alert(data.message);
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue lors de l\'envoi du fichier.');
+        });
+    }
+});
 
     // New Button for showing data information
     btnShowDataInfo.addEventListener('click', () => {
