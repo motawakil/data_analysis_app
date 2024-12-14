@@ -174,3 +174,8 @@ def download_pdf():
 
     except Exception as e:
         return jsonify({'error': f'Erreur lors de la génération du PDF: {str(e)}'}), 500
+    
+    
+    
+    
+    

@@ -6,9 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('tableBody');
     const btnNext = document.getElementById('btnNext');
     const actionButtons = document.getElementById('actionButtons');
-
     const progressBar = document.getElementById('progressBar');
-
+    
     // New sections
     const btnShowDataInfo = document.getElementById('btnShowDataInfo');
     const dataInfoSection = document.getElementById('dataInfoSection');
@@ -174,9 +173,12 @@ function editRow(row) {
                 if (data.file_info) {
                     dataInfoSection.classList.remove('d-none');
                     dataInfoSection.innerHTML = `
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" style="text-align: center; vertical-align: middle;">
+                           <caption style="caption-side: top; text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 1.5em;">
+                            Fiche Descriptive du Fichier Importé
+                            </caption>
                             <thead>
-                                <tr><th>Attribut</th><th>Valeur</th></tr>
+                                <tr><th> Caractère </th><th> Valeur </th></tr>
                             </thead>
                             <tbody>
                                 <tr><td>Taille du fichier</td><td>${data.file_info.file_size} bytes</td></tr>
@@ -189,45 +191,50 @@ function editRow(row) {
                         </table>
                     `;
                 }
+                
 
-                // Display Preprocessing Results
+              // Display Preprocessing Results
                 if (data.preprocessing_results) {
                     preprocessingDiv.classList.remove('d-none');
                     preprocessingDiv.innerHTML = `
-                        <h5>Valeurs Manquantes et Valeurs Uniques</h5>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nom de la Colonne</th>
-                                    <th>Valeurs Manquantes</th>
-                                    <th>% Manquantes</th>
-                                    <th>Valeurs Uniques</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${Object.keys(data.preprocessing_results.missing_values.total_missing).map(column => `
-                                    <tr>
-                                        <td>${column}</td>
-                                        <td>${data.preprocessing_results.missing_values.total_missing[column] || 0}</td>
-                                        <td>${(data.preprocessing_results.missing_values.percent_missing[column] || 0).toFixed(2)}%</td>
-                                        <td>${data.preprocessing_results.unique_values[column] || 0}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    `;
-                }
+                        <h5 style="caption-side: top; text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 1.5em;">Analyse des Valeurs Manquantes et Uniques</h5>
+                        <table class="table table-bordered table-striped" style="text-align: center; vertical-align: middle;">
+                        
+            <thead>
+                <tr>
+                    <th>Nom de la Colonne</th>
+                    <th>Valeurs Manquantes</th>
+                    <th>% Manquantes</th>
+                    <th>Valeurs Uniques</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${Object.keys(data.preprocessing_results.missing_values.total_missing).map(column => `
+                    <tr>
+                        <td>${column}</td>
+                        <td>${data.preprocessing_results.missing_values.total_missing[column] || 0}</td>
+                        <td>${(data.preprocessing_results.missing_values.percent_missing[column] || 0).toFixed(2)}%</td>
+                        <td>${data.preprocessing_results.unique_values[column] || 0}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
                 console.log(data.preprocessing_results.top_categorical_plot);
 
-                // Display Top Categorical Plot (Image)
-                if (data.preprocessing_results.top_categorical_plot) {
-                    plotImageDiv.classList.remove('d-none');
-                    plotImageDiv.innerHTML = `
-                        <h5>Top 2 Frequent Categorical Values</h5>
-                        <img src="data:image/png;base64,${data.preprocessing_results.top_categorical_plot}" class="img-fluid" alt="Top Categorical Plot">
-                    `;
-                   
-                }
+               // Display Top Categorical Plot (Image)
+            if (data.preprocessing_results.top_categorical_plot) {
+            plotImageDiv.classList.remove('d-none');
+            const title = " Frequent of Each Categorical column ";
+
+            plotImageDiv.innerHTML = `
+            <h5>${title}</h5>
+            <img src="data:image/png;base64,${data.preprocessing_results.top_categorical_plot}" class="img-fluid" alt="${title}">
+            `;
+            }
+            
                 btnNext.style.display = 'none';
                 
                 document.getElementById('actionButtons').classList.remove('d-none');

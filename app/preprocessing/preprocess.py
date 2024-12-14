@@ -61,7 +61,7 @@ def generate_top_categorical_plot(df):
 
     # Add title and labels
     plt.xticks(rotation=45, ha="right")
-    plt.title("Top 2 Frequent Values of Categorical Features")
+    plt.title("Bar Chart of Frequent Values for Categorical Features")
     plt.ylabel("Frequency")
     plt.tight_layout()
 
