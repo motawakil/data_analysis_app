@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableHeader = document.getElementById('tableHeader');
     const tableBody = document.getElementById('tableBody');
     const btnNext = document.getElementById('btnNext');
+    const actionButtons = document.getElementById('actionButtons');
+
     const progressBar = document.getElementById('progressBar');
 
     // New sections
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createTablePreview(data) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
-
+        // Add data headers
         const headers = Object.keys(data[0]);
         headers.forEach(header => {
             const th = document.createElement('th');
@@ -27,17 +29,69 @@ document.addEventListener('DOMContentLoaded', () => {
             tableHeader.appendChild(th);
         });
 
-        data.forEach(row => {
+
+        // Add Actions header
+        const actionsHeader = document.createElement('th');
+        actionsHeader.textContent = 'Actions';
+        actionsHeader.style.textAlign = 'center';
+        tableHeader.appendChild(actionsHeader);
+
+
+        data.forEach((row, index) => {
             const tr = document.createElement('tr');
+            // Add data cells
             headers.forEach(header => {
                 const td = document.createElement('td');
                 td.textContent = row[header];
+                td.setAttribute('data-original', row[header]);
                 tr.appendChild(td);
             });
+            
+             // Add action buttons cell
+            const actionsTd = document.createElement('td');
+            actionsTd.style.textAlign = 'center';
+        
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn btn-warning btn-sm me-2';
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> Modifier';
+            editBtn.onclick = () => editRow(tr);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-danger btn-sm';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Supprimer';
+            deleteBtn.onclick = () => deleteRow(tr);
+
+            actionsTd.appendChild(editBtn);
+            actionsTd.appendChild(deleteBtn);
+            tr.appendChild(actionsTd);
+        
             tableBody.appendChild(tr);
         });
+        
     }
+            
+    // Add these new functions for edit and delete functionality
+function deleteRow(row) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette ligne ?')) {
+        row.remove();
+    }
+}
 
+function editRow(row) {
+    const cells = row.getElementsByTagName('td');
+    const lastIndex = cells.length - 1; // Skip the actions cell
+
+    for (let i = 0; i < lastIndex; i++) {
+        const cell = cells[i];
+        const originalValue = cell.getAttribute('data-original');
+        const newValue = prompt('Modifier la valeur:', cell.textContent);
+        
+        if (newValue !== null) {
+            cell.textContent = newValue;
+        }
+    }
+}
+    
     // Simulate progress bar
     function simulateProgressBar() {
         const progressBarFill = document.querySelector('.progress-bar');
@@ -79,7 +133,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.length > 0) {
                         previewSection.classList.remove('d-none');
                         btnNext.disabled = true;
+                        
+                        // Show progress bar before simulation
+                        const progressBarContainer = document.getElementById('progressBarContainer');
+                        progressBarContainer.classList.remove('d-none');
+                        
                         await simulateProgressBar();
+                        
+                        // Hide progress bar after completion
+                        progressBarContainer.classList.add('d-none');
+                        
                         createTablePreview(data);
                         btnNext.disabled = false;
                         dataLoaded = true;
@@ -163,14 +226,119 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h5>Top 2 Frequent Categorical Values</h5>
                         <img src="data:image/png;base64,${data.preprocessing_results.top_categorical_plot}" class="img-fluid" alt="Top Categorical Plot">
                     `;
+                   
                 }
+                btnNext.style.display = 'none';
+                
+                document.getElementById('actionButtons').classList.remove('d-none');
+
 
                 if (data.message) alert(data.message);
+       
+
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Une erreur est survenue lors de l\'envoi du fichier.');
             });
         }
+    });
+
+    
+});
+
+
+// saving the page js code 
+// Event listener for "Download Page as PDF" button
+document.getElementById("downloadPageButton").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Set title for the PDF
+    doc.setFontSize(20);
+    doc.text("Data Importation Results", 20, 20);
+
+    let yOffset = 30; // Set starting Y position for content
+
+    // Capture the content of the card-body sections (tables and plot)
+    let content = document.querySelectorAll(".card-body");
+
+    // Iterate through all card content and add them to the PDF
+    content.forEach(function (section) {
+        // Add text content of the section to the PDF
+        doc.setFontSize(12);
+        doc.text(section.innerText || section.textContent, 20, yOffset);
+
+        // Adjust yOffset for the next section
+        yOffset += 20;
+    });
+
+    // Add the plot image if it exists
+    const plotImageDiv = document.getElementById('plotImageDiv');
+    if (plotImageDiv) {
+        let plotImage = plotImageDiv.querySelector('img');
+        if (plotImage) {
+            doc.addImage(plotImage.src, 'PNG', 20, yOffset, 180, 120);
+            yOffset += 130; // Adjust the Y position after adding the image
+        }
+    }
+
+    // Save the PDF with a filename
+    doc.save("importation_results.pdf");
+});
+
+// Event listener for "Save Dataset" button
+document.getElementById("saveDatasetButton").addEventListener("click", function () {
+    // Trigger the save dataset functionality by navigating to the server route
+    window.location.href = "/save_dataset";
+});
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const applyPreprocessingBtn = document.getElementById('applyPreprocessing');
+    
+    applyPreprocessingBtn.addEventListener('click', function() {
+        const preprocessingOptions = {
+            missingValues: document.getElementById('missingValuesStrategy').value,
+            scaling: document.getElementById('scalingStrategy').value,
+            encoding: document.getElementById('encodingStrategy').value,
+            duplicates: document.getElementById('duplicatesStrategy').value
+        };
+
+        // Show loading state
+        applyPreprocessingBtn.disabled = true;
+        applyPreprocessingBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Traitement...';
+
+        // Send preprocessing options to backend
+        fetch('/apply_preprocessing', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(preprocessingOptions)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the preprocessing results section
+            const preprocessingResults = document.getElementById('preprocessingResults');
+            preprocessingResults.classList.remove('d-none');
+            
+            // Reset button state
+            applyPreprocessingBtn.disabled = false;
+            applyPreprocessingBtn.innerHTML = 'Appliquer les traitements <i class="fas fa-cogs ms-2"></i>';
+            
+            // Show success message
+            alert('Prétraitement appliqué avec succès!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            applyPreprocessingBtn.disabled = false;
+            applyPreprocessingBtn.innerHTML = 'Appliquer les traitements <i class="fas fa-cogs ms-2"></i>';
+            alert('Erreur lors du prétraitement');
+        });
     });
 });

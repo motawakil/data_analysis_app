@@ -27,7 +27,15 @@
     background-color: #f8f9fa;
     z-index: 1;
 }
+/* Add these styles for the action buttons */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
 
+.me-2 {
+    margin-right: 0.5rem;
+}
 /* Processing Options */
 .form-check {
     margin-left: 1rem;

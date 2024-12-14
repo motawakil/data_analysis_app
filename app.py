@@ -27,7 +27,7 @@ def import_data():
 @app.route('/analysis')
 def analysis():
     return render_template('analysis.html')
-
+    
 @app.route('/visualization')
 def visualization():
     return render_template('visualization.html')

@@ -4,6 +4,9 @@ import seaborn as sns
 import io
 import base64
 
+import matplotlib
+matplotlib.use('Agg')  # Use the Agg backend for non-GUI rendering
+
 def get_missing_values(df):
     """
     Function to compute the total and percentage of missing values per column.
