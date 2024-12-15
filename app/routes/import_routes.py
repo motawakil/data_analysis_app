@@ -178,4 +178,33 @@ def download_pdf():
     
     
     
-    
+@import_routes.route('/prepare_data', methods=['POST'])
+def prepare_data():
+    try:
+        # Get modified data from request
+        data = request.json['tableData']
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(data)
+        
+        # Create data_saved directory if it doesn't exist
+        save_dir = 'data_saved'
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        
+        # Save current version
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        save_path = os.path.join(save_dir, f'prepared_data_{timestamp}.csv')
+        df.to_csv(save_path, index=False)
+        
+        # Preprocess data
+        preprocessing_results = preprocess_data(df)
+        
+        return jsonify({
+            'message': 'Données préparées et sauvegardées avec succès!',
+            'preprocessing_results': preprocessing_results,
+            
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

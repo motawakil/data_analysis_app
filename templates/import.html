@@ -27,7 +27,11 @@
     <!-- Data Preview Section -->
     <div class="card mb-4 d-none" id="previewSection">
         <div class="card-body">
-            <h5 class="card-title">Aperçu des Données</h5>
+             <!-- Title Section -->
+            <div class="text-center mb-4">
+            <h2 class="card-title fw-bold" style="font-size: 2rem; color: #333;">Aperçu des Données</h2>
+            <p class="text-muted" style="font-size: 1rem;">Visualisez les données importées et vérifiez leur intégrité avant traitement.</p>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped" id="previewTable">
                     <thead>
@@ -69,7 +73,6 @@
 
     <!-- Action Buttons Section (Initially hidden) -->
     <div class="d-flex justify-content-center mt-4 d-none" id="actionButtons">
-    <button class="btn btn-success me-5" id="saveDatasetButton">Save Dataset</button>
     <button class="btn btn-info" id="downloadPageButton">Download Page as PDF</button>
     </div>
 
@@ -84,13 +87,14 @@
         <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i>Retour
         </a>
+        <!-- Replace the visualization button with -->
         <div>
             <button class="btn btn-primary me-2" id="btnNext" disabled>
-                Valider le choix <i class="fas fa-arrow-right ms-2"></i>
+            Valider le choix <i class="fas fa-arrow-right ms-2"></i>
             </button>
-            <a href="{{ url_for('visualization') }}" class="btn btn-secondary">
-                <i class="fas fa-chart-line me-2"></i>Visualiser
-            </a>
+            <button class="btn btn-success d-none" id="prepareDataButton">
+             Préparer les données pour visualiser
+            </button>
         </div>
     </div>
 

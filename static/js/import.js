@@ -7,6 +7,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNext = document.getElementById('btnNext');
     const actionButtons = document.getElementById('actionButtons');
     const progressBar = document.getElementById('progressBar');
+
+
+
+    const prepareDataButton = document.getElementById('prepareDataButton');
+    
+    prepareDataButton.addEventListener('click', async () => {
+        try {
+            // Show loading state
+            prepareDataButton.disabled = true;
+            prepareDataButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Préparation en cours...';
+
+            const tableData = getTableData();
+            
+            const response = await fetch('/import_routes/prepare_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tableData })
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Update preprocessing results section with success message
+                const preprocessingDiv = document.getElementById('preprocessingResults');
+                preprocessingDiv.classList.remove('d-none');
+                preprocessingDiv.innerHTML = `
+                    
+                    ${preprocessingDiv.innerHTML}
+                `;
+
+                // Scroll to the message
+                preprocessingDiv.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            // Show error message
+            const preprocessingDiv = document.getElementById('preprocessingResults');
+            preprocessingDiv.classList.remove('d-none');
+            preprocessingDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Erreur: ${error.message}
+                </div>
+            `;
+        } finally {
+            // Reset button state
+            prepareDataButton.disabled = false;
+            prepareDataButton.innerHTML = 'Préparer les données pour visualiser';
+        }
+    });
+
+    function getTableData() {
+        const table = document.getElementById('previewTable');
+        const headers = Array.from(table.querySelectorAll('thead th'))
+            .map(th => th.textContent)
+            .filter(header => header !== 'Actions');
+        
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        return rows.map(row => {
+            const cells = Array.from(row.querySelectorAll('td'));
+            const rowData = {};
+            headers.forEach((header, index) => {
+                rowData[header] = cells[index].textContent;
+            });
+            return rowData;
+        });
+    }
+
+
     
     // New sections
     const btnShowDataInfo = document.getElementById('btnShowDataInfo');
@@ -190,6 +262,8 @@ function editRow(row) {
                             </tbody>
                         </table>
                     `;
+                    document.getElementById('prepareDataButton').classList.remove('d-none');
+
                 }
                 
 
@@ -294,11 +368,7 @@ document.getElementById("downloadPageButton").addEventListener("click", function
     doc.save("importation_results.pdf");
 });
 
-// Event listener for "Save Dataset" button
-document.getElementById("saveDatasetButton").addEventListener("click", function () {
-    // Trigger the save dataset functionality by navigating to the server route
-    window.location.href = "/save_dataset";
-});
+
 
 
 
@@ -349,3 +419,70 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+
+// Add this new function to collect table data
+function getTableData() {
+    const table = document.getElementById('previewTable');
+    const headers = Array.from(table.querySelectorAll('thead th'))
+        .map(th => th.textContent)
+        .filter(header => header !== 'Actions');
+    
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    return rows.map(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        const rowData = {};
+        headers.forEach((header, index) => {
+            rowData[header] = cells[index].textContent;
+        });
+        return rowData;
+    });
+}
+
+// Add event listener for prepare data button
+document.getElementById('prepareDataButton').addEventListener('click', async () => {
+    try {
+        const button = document.getElementById('prepareDataButton');
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Préparation en cours...';
+
+        const tableData = getTableData();
+        
+        const response = await fetch('/import_routes/prepare_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ tableData })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Update preprocessing results section
+            const preprocessingDiv = document.getElementById('preprocessingResults');
+            preprocessingDiv.innerHTML = `
+                <div class="card-body">
+                    <h5 class="alert alert-success">
+                        ${data.message}
+                        <br>
+                       
+                    </h5>
+                    <!-- Display preprocessing results here -->
+                </div>
+            `;
+            preprocessingDiv.classList.remove('d-none');
+        } else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        alert('Erreur: ' + error.message);
+    } finally {
+        const button = document.getElementById('prepareDataButton');
+        button.disabled = false;
+        button.innerHTML = 'Préparer les données pour visualiser';
+    }
+});
+
