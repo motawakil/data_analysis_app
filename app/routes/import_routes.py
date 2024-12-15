@@ -15,6 +15,12 @@ if not os.path.exists(UPLOAD_FOLDER):
 # Global variable to store the current dataset (can be modified if multiple users are involved)
 current_dataset = None
 
+
+
+        
+        
+        
+
 @import_routes.route('/upload', methods=['POST'])
 def upload_file():
     global current_dataset
@@ -73,6 +79,24 @@ def upload_file():
 
 
 
+
+# Helper function to add a table to the PDF
+def add_table(pdf, headers, data, col_widths, row_height=10):
+    # Add header row
+    pdf.set_font("Arial", 'B', 10)
+    for i, header in enumerate(headers):
+        pdf.cell(col_widths[i], row_height, header, border=1, align='C')
+    pdf.ln()
+
+    # Add data rows
+    pdf.set_font("Arial", '', 10)
+    for row in data:
+        for i, cell in enumerate(row):
+            pdf.cell(col_widths[i], row_height, str(cell), border=1, align='C')
+        pdf.ln()
+        
+        
+        
 # Route to download the entire page (dataset preview + plot) as a PDF
 
 
@@ -90,20 +114,11 @@ def download_pdf():
         # Title of the document
         pdf.set_font("Arial", size=16, style='B')
         pdf.cell(200, 10, txt="Importation Results", ln=True, align='C')
-        pdf.ln(10)  # Line break
+        pdf.ln(10)
 
         # 1. File Information Table
         pdf.set_font("Arial", size=12, style='B')
         pdf.cell(200, 10, txt="File Information", ln=True)
-        pdf.set_font("Arial", size=10)
-
-        # Column widths for the file info table
-        col_widths = [100, 90]
-
-        # Adding header
-        pdf.cell(col_widths[0], 10, "Attribut", border=1, align='C')
-        pdf.cell(col_widths[1], 10, "Valeur", border=1, align='C')
-        pdf.ln()
 
         # File information rows
         file_info = current_dataset['file_info']
@@ -115,49 +130,34 @@ def download_pdf():
             ("Nombre de colonnes", file_info['num_columns']),
             ("Types de données", ', '.join(file_info['data_types']))
         ]
-
-        # Add rows with data to the table
-        for row in file_info_data:
-            pdf.cell(col_widths[0], 10, row[0], border=1, align='C')
-            pdf.cell(col_widths[1], 10, row[1], border=1, align='C')
-            pdf.ln()
-
-        pdf.ln(10)  # Line break between sections
+        
+        # Add file information table
+        add_table(pdf, ["Attribut", "Valeur"], file_info_data, [100, 90])
+        pdf.ln(10)
 
         # 2. Preprocessing Results Table
         pdf.set_font("Arial", size=12, style='B')
         pdf.cell(200, 10, txt="Preprocessing Results", ln=True)
-        pdf.set_font("Arial", size=10)
 
-        # Column widths for the preprocessing results table
-        col_widths = [50, 40, 40, 50]
-
-        # Adding header for preprocessing results table
-        pdf.cell(col_widths[0], 10, "Nom de la Colonne", border=1, align='C')
-        pdf.cell(col_widths[1], 10, "Valeurs Manquantes", border=1, align='C')
-        pdf.cell(col_widths[2], 10, "% Manquantes", border=1, align='C')
-        pdf.cell(col_widths[3], 10, "Valeurs Uniques", border=1, align='C')
-        pdf.ln()
-
-        # Add rows for preprocessing results
+        # Prepare preprocessing data
         preprocessing_results = current_dataset['preprocessing_results']
+        preprocessing_data = []
         for column in preprocessing_results['missing_values']['total_missing']:
             missing_values = preprocessing_results['missing_values']['total_missing'][column] or 0
             percent_missing = preprocessing_results['missing_values']['percent_missing'][column] or 0
             unique_values = preprocessing_results['unique_values'][column] or 0
-            
-            pdf.cell(col_widths[0], 10, column, border=1, align='C')
-            pdf.cell(col_widths[1], 10, str(missing_values), border=1, align='C')
-            pdf.cell(col_widths[2], 10, f"{percent_missing:.2f}%", border=1, align='C')
-            pdf.cell(col_widths[3], 10, str(unique_values), border=1, align='C')
-            pdf.ln()
+            preprocessing_data.append([
+                column, 
+                str(missing_values), 
+                f"{percent_missing:.2f}%", 
+                str(unique_values)
+            ])
 
-        pdf.ln(10)  # Line break between sections
-
-        # 3. Image (Optional)
-        if os.path.exists(current_dataset['image_path']):
-            pdf.image(current_dataset['image_path'], x=10, y=pdf.get_y(), w=180)
-            pdf.ln(70)  # Adjust to ensure image does not overlap the text
+        # Add preprocessing results table
+        add_table(pdf, 
+                 ["Nom de la Colonne", "Valeurs Manquantes", "% Manquantes", "Valeurs Uniques"],
+                 preprocessing_data,
+                 [50, 40, 40, 50])
 
         # Save PDF to BytesIO object
         pdf_output = BytesIO()
@@ -165,7 +165,46 @@ def download_pdf():
         pdf_output.seek(0)
 
         # Send PDF as a response
-        return send_file(pdf_output, as_attachment=True, download_name="importation_results.pdf", mimetype="application/pdf")
+        return send_file(
+            pdf_output,
+            as_attachment=True,
+            download_name="importation_results.pdf",
+            mimetype="application/pdf"
+        )
 
     except Exception as e:
         return jsonify({'error': f'Erreur lors de la génération du PDF: {str(e)}'}), 500
+    
+    
+    
+    
+@import_routes.route('/prepare_data', methods=['POST'])
+def prepare_data():
+    try:
+        # Get modified data from request
+        data = request.json['tableData']
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(data)
+        
+        # Create data_saved directory if it doesn't exist
+        save_dir = 'data_saved'
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        
+        # Save current version
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        save_path = os.path.join(save_dir, f'prepared_data_{timestamp}.csv')
+        df.to_csv(save_path, index=False)
+        
+        # Preprocess data
+        preprocessing_results = preprocess_data(df)
+        
+        return jsonify({
+            'message': 'Données préparées et sauvegardées avec succès!',
+            'preprocessing_results': preprocessing_results,
+            
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

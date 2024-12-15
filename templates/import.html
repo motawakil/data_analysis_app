@@ -27,7 +27,11 @@
     <!-- Data Preview Section -->
     <div class="card mb-4 d-none" id="previewSection">
         <div class="card-body">
-            <h5 class="card-title">Aperçu des Données</h5>
+             <!-- Title Section -->
+            <div class="text-center mb-4">
+            <h2 class="card-title fw-bold" style="font-size: 2rem; color: #333;">Aperçu des Données</h2>
+            <p class="text-muted" style="font-size: 1rem;">Visualisez les données importées et vérifiez leur intégrité avant traitement.</p>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped" id="previewTable">
                     <thead>
@@ -39,15 +43,6 @@
         </div>
     </div>
 
-    <!-- Navigation -->
-    <div class="d-flex justify-content-between">
-        <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Retour
-        </a>
-        <button class="btn btn-primary" id="btnNext" disabled>
-            Valider le choix <i class="fas fa-arrow-right ms-2"></i>
-        </button>
-    </div>
 
     <!-- Data information div -->
     <div class="card mb-4 d-none" id="dataInfoSection">
@@ -76,19 +71,32 @@
 
     <div id="plotImageDiv" class="d-none mt-4"></div>
 
-    <!-- Action Buttons Section (Buttons hidden initially) -->
-    <div class="d-flex justify-content-between mt-4" id="actionButtons">
-        <button class="btn btn-success " id="saveDatasetButton">Save Dataset</button>
-        <button class="btn btn-warning " id="downloadPageButton">
-            Download Page as PDF
-        </button>
+    <!-- Action Buttons Section (Initially hidden) -->
+    <div class="d-flex justify-content-center mt-4 d-none" id="actionButtons">
+    <button class="btn btn-info" id="downloadPageButton">Download Page as PDF</button>
     </div>
 
     <!-- Progress Bar Section -->
     <div class="progress mb-3 d-none" id="progressBarContainer">
-        <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-    </div>
+    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+     </div>
 </div>
+
+    <!-- Navigation -->
+    <div class="d-flex justify-content-between">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+        <!-- Replace the visualization button with -->
+        <div>
+            <button class="btn btn-primary me-2" id="btnNext" disabled>
+            Valider le choix <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+            <button class="btn btn-success d-none" id="prepareDataButton">
+             Préparer les données pour visualiser
+            </button>
+        </div>
+    </div>
 
 <!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/import.css') }}">
@@ -106,3 +114,6 @@
     <script src="{{ url_for('static', filename='js/import.js') }}"></script>
 
 {% endblock %}
+
+
+
