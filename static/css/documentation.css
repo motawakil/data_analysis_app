@@ -214,3 +214,211 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.3);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Documentation Page Styles */
+.documentation-header {
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.feature-item {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.feature-item:hover {
+    transform: translateY(-3px);
+}
+
+.video-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* Algorithmes */
+.algorithm-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.algorithm-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.equation-box {
+    background-color: #f4f6f9;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.parameter-box {
+    border-left: 4px solid #0d6efd;
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* Recherche dans la documentation */
+.documentation-header input[type="search"] {
+    border: 1px solid #ced4da;
+    border-radius: 20px;
+    padding: 10px 15px;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.documentation-header input[type="search"]:focus {
+    border-color: #0d6efd;
+    outline: none;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
+}
+
+
+/* Print styles */
+@media print {
+    .video-card, .play-button {
+        display: none !important;
+    }
+    
+    .algorithm-card {
+        break-inside: avoid;
+    }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .feature-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/* FAQ Section Styles */
+.faq-section {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.accordion-item {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.accordion-button {
+    padding: 1.25rem;
+    font-weight: 500;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    color: #0d6efd;
+}
+
+.accordion-button:hover {
+    background-color: #f8f9fa;
+}
+
+.accordion-body {
+    padding: 1.25rem;
+    background-color: white;
+}
+
+/* FAQ Categories */
+.faq-categories .btn {
+    transition: all 0.3s ease;
+}
+
+.faq-categories .btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* FAQ Search */
+#faqSearch {
+    border-radius: 20px;
+    padding: 0.75rem 1.25rem;
+}
+
+.input-group-text {
+    background-color: transparent;
+    border-right: none;
+}
+
+/* Animation */
+.accordion-collapse {
+    transition: all 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+    .faq-categories .btn {
+        width: calc(50% - 1rem);
+        margin-bottom: 0.5rem;
+    }
+}
