@@ -108,29 +108,30 @@ document.addEventListener('DOMContentLoaded', () => {
         tableHeader.appendChild(actionsHeader);
 
 
-        data.forEach((row, index) => {
+        data.forEach((row, rowIndex) => {
             const tr = document.createElement('tr');
+            tr.dataset.rowIndex = rowIndex;
             // Add data cells
             headers.forEach(header => {
                 const td = document.createElement('td');
                 td.textContent = row[header];
-                td.setAttribute('data-original', row[header]);
+                td.dataset.original = row[header];
+                td.dataset.column = header;
                 tr.appendChild(td);
             });
             
-             // Add action buttons cell
             const actionsTd = document.createElement('td');
             actionsTd.style.textAlign = 'center';
-        
+
             const editBtn = document.createElement('button');
             editBtn.className = 'btn btn-warning btn-sm me-2';
             editBtn.innerHTML = '<i class="fas fa-edit"></i> Modifier';
-            editBtn.onclick = () => editRow(tr);
+            editBtn.onclick = () => toggleEditMode(tr, editBtn);
 
-            const deleteBtn = document.createElement('button');
+             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'btn btn-danger btn-sm';
             deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Supprimer';
-            deleteBtn.onclick = () => deleteRow(tr);
+            deleteBtn.onclick = () => tr.remove();
 
             actionsTd.appendChild(editBtn);
             actionsTd.appendChild(deleteBtn);
@@ -140,28 +141,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
     }
-            
-    // Add these new functions for edit and delete functionality
-function deleteRow(row) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette ligne ?')) {
-        row.remove();
-    }
-}
+    function toggleEditMode(row, editBtn) {
+    const cells = row.querySelectorAll('td:not(:last-child)');
+    const isEditing = row.classList.contains('editing');
 
-function editRow(row) {
-    const cells = row.getElementsByTagName('td');
-    const lastIndex = cells.length - 1; // Skip the actions cell
-
-    for (let i = 0; i < lastIndex; i++) {
-        const cell = cells[i];
-        const originalValue = cell.getAttribute('data-original');
-        const newValue = prompt('Modifier la valeur:', cell.textContent);
-        
-        if (newValue !== null) {
-            cell.textContent = newValue;
-        }
+    if (isEditing) {
+        // Save mode
+        row.classList.remove('editing');
+        cells.forEach(cell => {
+            cell.contentEditable = 'false';
+            cell.classList.remove('editing-cell');
+        });
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Modifier';
+    } else {
+        // Edit mode
+        row.classList.add('editing');
+        cells.forEach(cell => {
+            cell.contentEditable = 'true';
+            cell.classList.add('editing-cell');
+        });
+        editBtn.innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
     }
-}
+}   
+
+
+
     
     // Simulate progress bar
     function simulateProgressBar() {

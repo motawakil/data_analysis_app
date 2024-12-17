@@ -4,17 +4,34 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1>Documentation et Tutoriels</h1>
-            <p class="lead text-muted">Apprenez à utiliser notre application d'analyse de données et de machine learning</p>
+        <!-- Add this section at the top -->
+        <div class="documentation-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1>Documentation et Tutoriels</h1>
+                    <p class="lead text-muted">Apprenez à utiliser notre application d'analyse de données et de machine learning</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-primary" id="downloadDocs">
+                        <i class="fas fa-file-pdf me-2"></i>Télécharger la Documentation
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-end">
-            <button class="btn btn-primary" id="downloadDocs">
-                <i class="fas fa-file-pdf me-2"></i>Télécharger la Documentation
-            </button>
+
+        <!-- Update video cards structure -->
+        <div class="video-card">
+            <div class="video-thumbnail" data-video-id="tutorial1">
+                <img src="{{ url_for('static', filename='images/1719562501326.jpeg') }}" 
+                    alt="Tutoriel 1" 
+                    class="img-fluid"
+                    loading="lazy">
+               <div class="play-button">
+                    <i class="fas fa-play"></i>
+              </div>
+               <span class="video-duration">5:30</span>
+            </div>
         </div>
-    </div>
 
     <!-- Introduction Section -->
     <div class="card mb-4">
@@ -92,6 +109,7 @@
             
             <!-- Tab Content -->
             <div class="tab-content mt-4" id="algorithmTabContent">
+    
                 <!-- Regression -->
                 <div class="tab-pane fade show active" id="regression" role="tabpanel">
                     <div class="algorithm-card">
@@ -99,68 +117,120 @@
                         <div class="equation-box">
                             y = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ + ε
                         </div>
-                        <p>La régression linéaire modélise la relation entre une variable dépendante y et une ou plusieurs variables indépendantes x.</p>
-                        <h5>Hypothèses :</h5>
+                        <p>La régression linéaire modélise la relation entre une variable dépendante <code>y</code> et une ou plusieurs variables indépendantes <code>x</code>.</p>
+                        <h5>Applications :</h5>
                         <ul>
-                            <li>Linéarité</li>
-                            <li>Indépendance des erreurs</li>
-                            <li>Homoscédasticité</li>
-                            <li>Normalité des résidus</li>
+                            <li>Prévision des ventes</li>
+                            <li>Analyse des tendances économiques</li>
+                            <li>Modélisation des coûts</li>
+                        </ul>
+                        <h5>Exemple :</h5>
+                        <pre>
+                            Input: x = [1, 2, 3], y = [2.1, 4.1, 6.1]
+                            Output: y = 2.0x + 0.1
+                        </pre>
+                        <img src="https://moncoachdata.com/wp-content/uploads/2021/09/output-regression-lineaire.png" alt="Linear Regression Example" class="img-fluid">
+                    </div>
+    
+                    <div class="algorithm-card">
+                        <h4>Régression Logistique</h4>
+                        <p>La régression logistique est utilisée pour modéliser une variable dépendante binaire (<code>0</code> ou <code>1</code>) en fonction des variables indépendantes.</p>
+                        <h5>Applications :</h5>
+                        <ul>
+                            <li>Analyse des probabilités de maladie</li>
+                            <li>Détection de spam</li>
+                            <li>Prédiction de churn client</li>
                         </ul>
                     </div>
                 </div>
-                
+    
                 <!-- Classification -->
                 <div class="tab-pane fade" id="classification" role="tabpanel">
                     <div class="algorithm-card">
                         <h4>Random Forest</h4>
-                        <p>Random Forest est un algorithme d'ensemble qui combine plusieurs arbres de décision pour améliorer la précision et réduire le surapprentissage.</p>
-                        <h5>Avantages :</h5>
+                        <p>Random Forest est un algorithme d'ensemble basé sur plusieurs arbres de décision pour une classification ou une régression précise.</p>
+                        <h5>Cas d'usage :</h5>
                         <ul>
-                            <li>Robuste au surapprentissage</li>
-                            <li>Gère bien les valeurs manquantes</li>
-                            <li>Fournit l'importance des variables</li>
+                            <li>Détection de fraudes</li>
+                            <li>Analyse des données médicales</li>
+                            <li>Systèmes de recommandation</li>
                         </ul>
-                        <div class="parameter-box">
-                            <h6>Paramètres Clés :</h6>
-                            <code>n_estimators</code>: Nombre d'arbres<br>
-                            <code>max_depth</code>: Profondeur maximale des arbres<br>
-                            <code>min_samples_split</code>: Nombre minimum d'échantillons pour diviser un nœud
-                        </div>
+                        <h5>Exemple :</h5>
+                        <pre>
+                            Input: Features = [Age, Income], Label = [Yes/No]
+                            Output: Probabilité de la classe = 0.85 (Yes)
+                        </pre>
+                    </div>
+    
+                    <div class="algorithm-card">
+                        <h4>Support Vector Machine (SVM)</h4>
+                        <p>SVM est un algorithme puissant pour la classification qui maximise le "margin" entre les classes.</p>
+                        <h5>Applications :</h5>
+                        <ul>
+                            <li>Reconnaissance faciale</li>
+                            <li>Analyse sentimentale</li>
+                            <li>Prédiction de maladies</li>
+                        </ul>
                     </div>
                 </div>
-                
+    
                 <!-- Clustering -->
                 <div class="tab-pane fade" id="clustering" role="tabpanel">
                     <div class="algorithm-card">
                         <h4>K-Means</h4>
-                        <div class="equation-box">
-                            J = Σᵢ Σⱼ ||xᵢ - μⱼ||²
-                        </div>
-                        <p>K-means est un algorithme de clustering qui partitionne n observations en k clusters, où chaque observation appartient au cluster avec la moyenne la plus proche.</p>
-                        <h5>Étapes :</h5>
-                        <ol>
-                            <li>Initialisation aléatoire des centroids</li>
-                            <li>Attribution des points au centroid le plus proche</li>
-                            <li>Mise à jour des positions des centroids</li>
-                            <li>Répétition jusqu'à convergence</li>
-                        </ol>
+                        <p>K-means regroupe les données en clusters homogènes basés sur leurs similarités.</p>
+                        <h5>Avantages :</h5>
+                        <ul>
+                            <li>Simplicité et rapidité</li>
+                            <li>Convient à de grandes quantités de données</li>
+                        </ul>
+                        <h5>Exemple :</h5>
+                        <pre>
+                            Input: Points = [(1,2), (2,3), (8,9)]
+                            Output: Clusters = {[Cluster 1: (1,2), (2,3)], [Cluster 2: (8,9)]}
+                        </pre>
+                        <img src="https://images.javatpoint.com/tutorial/machine-learning/images/k-means-clustering-algorithm-in-machine-learning.png" alt="K-Means Clustering Example" class="img-fluid">
+                    </div>
+    
+                    <div class="algorithm-card">
+                        <h4>DBSCAN</h4>
+                        <p>DBSCAN est un algorithme de clustering basé sur la densité, capable de détecter des clusters de formes arbitraires.</p>
+                        <h5>Applications :</h5>
+                        <ul>
+                            <li>Analyse des anomalies</li>
+                            <li>Groupement des comportements utilisateurs</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+<section class="faq-section my-5">
+    <h2 class="mb-4">Questions Fréquentes</h2>
+        
+    <!-- FAQ Categories -->
+    <div class="faq-categories mb-4">
+            <button class="btn btn-outline-primary me-2 mb-2" data-category="all">Toutes</button>
+            <button class="btn btn-outline-primary me-2 mb-2" data-category="import">Importation</button>
+            <button class="btn btn-outline-primary me-2 mb-2" data-category="analysis">Analyse</button>
+            <button class="btn btn-outline-primary me-2 mb-2" data-category="export">Exportation</button>
+    </div>
+    
+    <!-- FAQ Search -->
+    <div class="input-group mb-4">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" id="faqSearch" placeholder="Rechercher une question...">
+    </div>   
     <!-- FAQ Section -->
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Questions Fréquentes</h2>
             <div class="accordion" id="faqAccordion">
                 <!-- FAQ Item 1 -->
-                <div class="accordion-item">
+                <div class="accordion-item" data-category="import">
                     <h3 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            Comment puis-je importer mes données ?
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Comment importer mes données ?
                         </button>
                     </h3>
                     <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
@@ -212,7 +282,7 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Video Modal -->
 <div class="modal fade" id="videoModal" tabindex="-1">
