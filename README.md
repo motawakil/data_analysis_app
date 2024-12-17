@@ -58,7 +58,7 @@ When you're done working, deactivate the virtual environment:
 deactivate
 ```
 
-## Project Structure
+## Project Structure (updated)
 
 ```
 data_analysis_app/
@@ -87,6 +87,8 @@ data_analysis_app/
 │       ├── analysis.js           # Analysis page functionality
 │       ├── export.js             # Export functionality
 │       └── import.js             # Import functionality
+        └── visualisation.js             # Visualisation functionality
+
 ├── templates/                     # HTML templates
 │   ├── about.html                # About page
 │   ├── analysis.html             # Data analysis page
