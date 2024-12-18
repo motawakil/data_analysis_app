@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Analyse de Données ML{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <i class="fas fa-brain me-2"></i>ML Analysis
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" 
+       href="{{ url_for('main.home') }}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'documentation' %}active{% endif %}" 
+                           href="{{ url_for('main.documentation') }}">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" 
+                           href="{{ url_for('main.about') }}">À Propos</a>
+                    </li>
+                    
+                    {% if 'user_id' in session %}
+                        <!-- Restricted Pages for Logged-in Users -->
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'import_data' %}active{% endif %}" 
+                               href="{{ url_for('main.import_data') }}">Importation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'visualization' %}active{% endif %}" 
+                               href="{{ url_for('main.visualization') }}">Visualisation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'analysis' %}active{% endif %}" 
+                               href="{{ url_for('main.analysis') }}">Analyse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'export' %}active{% endif %}" 
+                               href="{{ url_for('main.export') }}">Export</a>
+                        </li>
+                        <!-- Logout Option -->
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+                            </a>
+                        </li>
+                       
+<li class="nav-item">
+    <span class="nav-link disabled">
+        <i class="bi bi-person-circle"></i> {{ session['username'] }}
+    </span>
+</li>
+                    {% else %}
+                        <!-- Login and Signup for Guests -->
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" 
+                               href="{{ url_for('auth.login') }}">
+                               <i class="fas fa-sign-in-alt me-1"></i>Connexion
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'auth.signup' %}active{% endif %}" 
+                               href="{{ url_for('auth.signup') }}">
+                               <i class="fas fa-user-plus me-1"></i>Inscription
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2024 Data Analysis App. Tous droits réservés.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>{% endblock %}
+</body>
+</html>

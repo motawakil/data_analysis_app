@@ -15,12 +15,6 @@ if not os.path.exists(UPLOAD_FOLDER):
 # Global variable to store the current dataset (can be modified if multiple users are involved)
 current_dataset = None
 
-
-
-        
-        
-        
-
 @import_routes.route('/upload', methods=['POST'])
 def upload_file():
     global current_dataset
