@@ -21,9 +21,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+       
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" 
-       href="{{ url_for('main.home') }}">Accueil</a>
+                          href="{{ url_for('main.home') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'documentation' %}active{% endif %}" 
@@ -52,7 +53,7 @@
                             <a class="nav-link {% if request.endpoint == 'export' %}active{% endif %}" 
                                href="{{ url_for('main.export') }}">Export</a>
                         </li>
-                        <!-- Logout Option -->
+                        <!-- Logou  t Option -->
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
                                 <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
@@ -81,6 +82,11 @@
                     {% endif %}
                 </ul>
             </div>
+
+              <!-- Dark Mode Toggle Button -->
+              <button id="dark-mode-icon" class="btn btn-sm btn-outline-secondary ms-2">
+                <i class="bi bi-moon"></i>
+            </button>
         </div>
     </nav>
 

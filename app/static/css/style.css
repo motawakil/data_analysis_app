@@ -278,8 +278,3 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Adjust navbar to account for fixed icon */
-.navbar {
-    padding-left: 4rem !important;
-}
-

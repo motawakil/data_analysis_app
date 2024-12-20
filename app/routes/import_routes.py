@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify, send_file , current_app
 import pandas as pd
 from app.preprocessing.preprocess import preprocess_data
 from datetime import datetime
@@ -182,9 +182,9 @@ def prepare_data():
         df = pd.DataFrame(data)
         
         # Create data_saved directory if it doesn't exist
-        save_dir = 'data_saved'
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
+        save_dir = os.path.join(current_app.static_folder, 'data_saved')
+        #if not os.path.exists(save_dir):
+         #   os.makedirs(save_dir)
         
         # Save current version
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

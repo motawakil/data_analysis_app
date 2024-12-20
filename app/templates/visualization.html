@@ -11,23 +11,59 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">Configuration du Graphique</h5>
                 </div>
-                <!-- File Selection -->
-<div class="mb-4">
-    <label class="form-label" >     Fichier à Visualiser</label>
-    <div class="input-group">
-        <select class="form-select" id="fileSelect">
-            <option value="">Sélectionner un fichier</option>
-            {% for file in uploaded_files %}
-            <option value="{{ file.id }}">{{ file.name }}</option>
-            {% endfor %}
-        </select>
-        <button class="btn btn-outline-primary" type="button" id="refreshFileList">
-            <i class="fas fa-sync-alt"></i>
-        </button>
-    </div>
-    <small class="text-muted">Sélectionnez le fichier que vous souhaitez analyser</small>
-</div>
                 <div class="card-body">
+                    <!-- File Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Fichier à Visualiser</label>
+                        <div class="input-group">
+                            <select class="form-select" id="fileSelect">
+                                <option value="">Sélectionner un fichier</option>
+                                {% for file in data_saved %}
+                                    <option value="{{ file.id }}">{{ file.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-outline-primary" type="button" id="refreshFileList">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Sélectionnez le fichier que vous souhaitez analyser</small>
+                    </div>
+
+                    <!-- Axis Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Axe X</label>
+                        <select class="form-select mb-2" id="xAxis">
+                            <option value="">Sélectionner une variable</option>
+                        </select>
+                        <label class="form-label small">Valeurs</label>
+                        <div class="input-group mb-2">
+                            <input type="number" class="form-control" id="xAxisMin" placeholder="Min">
+                            <input type="number" class="form-control" id="xAxisMax" placeholder="Max">
+                            <input type="number" class="form-control" id="xAxisStep" placeholder="Pas" step="0.1" value="10">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="xAxisLogScale">
+                            <label class="form-check-label" for="xAxisLogScale">Échelle logarithmique (X)</label>
+                        </div>
+
+                        <label class="form-label mt-2">Axe Y</label>
+                        <select class="form-select mb-2" id="yAxis">
+                            <option value="">Sélectionner une variable</option>
+                        </select>
+                        <label class="form-label small">Valeurs</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="yAxisMin" placeholder="Min">
+                            <input type="number" class="form-control" id="yAxisMax" placeholder="Max">
+                            <input type="number" class="form-control" id="yAxisStep" placeholder="Pas" step="0.1" value="10">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="yAxisLogScale">
+                            <label class="form-check-label" for="yAxisLogScale">Échelle logarithmique (Y)</label>
+                        </div>
+                    </div>
+
+
+                    
                     <!-- Chart Type Selection -->
                     <div class="mb-4">
                         <label class="form-label">Type de Graphique</label>
@@ -36,165 +72,122 @@
                             <option value="histogram">Histogramme</option>
                             <option value="line">Courbe d'apprentissage</option>
                             <option value="bar">Diagramme en barres</option>
+                            <option value="heatmap">Heatmap</option>
+                            <option value="pie">Pie/Donut Chart</option>
+                            <option value="box">Box Plot</option>
+                            <option value="bubble">Bubble Chart</option>
+                            <option value="time_series">Time Series Chart</option>
+                           
+                        </select>
+                    </div>
+
+                    <!-- Library Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Bibliothèque</label>
+                        <select class="form-select" id="chartLibrary">
+                            <option value="seaborn">Seaborn</option>
+                            <option value="matplotlib">Matplotlib</option>
                         </select>
                     </div>
 
 
-                    <!-- Axis Selection with Steps -->
-<div class="mb-4">
-    <label class="form-label">Axe X</label>
-    <select class="form-select mb-2" id="xAxis">
-        <option value="">Sélectionner une variable</option>
-    </select>
-    <div class="row g-2 mb-3">
-        <div class="col-6">
-            <label class="form-label small">Valeur Min</label>
-            <input type="number" class="form-control form-control-sm" id="xAxisMin" placeholder="Min">
-        </div>
-        <div class="col-6">
-            <label class="form-label small">Valeur Max</label>
-            <input type="number" class="form-control form-control-sm" id="xAxisMax" placeholder="Max">
-        </div>
-        <div class="col-12">
-            <label class="form-label small">Pas</label>
-            <input type="number" class="form-control form-control-sm" id="xAxisStep" placeholder="Pas" min="0.1" step="0.1" value="10">
-        </div>
-    </div>
 
-    <label class="form-label">Axe Y</label>
-    <select class="form-select mb-2" id="yAxis">
-        <option value="">Sélectionner une variable</option>
+
+ <!-- Filter Options -->
+ <div class="mb-4">
+    <label class="form-label">Filtrer les données</label>
+    <select class="form-select mb-2" id="filterType">
+        <option value="">Aucun filtre</option>
+        <option value="top">Top</option>
+        <option value="below">Below</option>
     </select>
-    <div class="row g-2">
-        <div class="col-6">
-            <label class="form-label small">Valeur Min</label>
-            <input type="number" class="form-control form-control-sm" id="yAxisMin" placeholder="Min">
-        </div>
-        <div class="col-6">
-            <label class="form-label small">Valeur Max</label>
-            <input type="number" class="form-control form-control-sm" id="yAxisMax" placeholder="Max">
-        </div>
-        <div class="col-12">
-            <label class="form-label small">Pas</label>
-            <input type="number" class="form-control form-control-sm" id="yAxisStep" placeholder="Pas" min="0.1" step="0.1"  value="10">
-        </div>
-    </div>
+    <input type="number" class="form-control" id="filterValue" placeholder="Nombre de valeurs">
+    <small class="text-muted">Spécifiez le nombre de valeurs à filtrer.</small>
 </div>
-                    <!-- Filters -->
+                    <!-- Export Options -->
                     <div class="mb-4">
-                        <label class="form-label">Filtres</label>
-                        <div class="filter-container">
-                            <div class="filter-item mb-2">
-                                <select class="form-select mb-2">
-                                    <option value="">Sélectionner une variable</option>
-                                </select>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Valeur">
-                                    <button class="btn btn-outline-danger" type="button">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        <label class="form-label">Exporter le graphique</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" id="exportPNG">Exporter en PNG</button>
+                            <button class="btn btn-outline-secondary" id="exportSVG">Exporter en SVG</button>
+                            <button class="btn btn-outline-success" id="exportPDF">Exporter en PDF</button>
                         </div>
-                        <button class="btn btn-outline-primary btn-sm mt-2" id="addFilter">
-                            <i class="fas fa-plus me-2"></i>Ajouter un filtre
-                        </button>
-                    </div>
-
-                    <!-- Model Selection for Comparison -->
-                    <div class="mb-4">
-                        <label class="form-label">Comparer avec</label>
-                        <select class="form-select" id="compareModel">
-                            <option value="">Sélectionner un modèle</option>
-                            <option value="model1">Modèle 1</option>
-                            <option value="model2">Modèle 2</option>
-                        </select>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" id="btnTrain">
+                        <button class="btn btn-primary" id="btnVisualize">
                             <i class="fas fa-play me-2"></i>Visualiser les données
-                        </button>
-                        <button class="btn btn-primary" id="updateChart">
-                            <i class="fas fa-sync-alt me-2"></i>Mettre à jour
-                        </button>
-                        <button class="btn btn-outline-primary" id="exportChart">
-                            <i class="fas fa-download me-2"></i>Exporter
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Chart Area -->
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Visualisation</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-outline-secondary btn-sm" id="zoomIn">
-                                <i class="fas fa-search-plus"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" id="zoomOut">
-                                <i class="fas fa-search-minus"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" id="resetZoom">
-                                <i class="fas fa-undo"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="position: relative; height: 70vh;">
-                        <canvas id="mainChart"></canvas>
-                    </div>
-                </div>
+       <!-- Chart Area -->
+<div class="col-md-9">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Visualisation</h5>
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary btn-sm" id="zoomIn">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" id="zoomOut">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" id="resetZoom">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="btn btn-outline-primary btn-sm" id="annotateChart">
+                    <i class="fas fa-pencil-alt"></i> Annoter le graphique
+                </button>
             </div>
+        </div>
+        <div class="card-body">
+            <div class="chart-container" style="position: relative; height: 70vh;">
+                <div id="visualizationContainer"></div> <!-- This div will contain the image -->
+            </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Statistics Panel -->
-             
+
+            <!-- Statistics -->
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Statistiques</h5>
                 </div>
-                <div class="mb-4">
-                    <label class="form-label">   Choisissez un variable pour obtenir les statistiques </label>
-                    <div class="input-group">
-                        <select class="form-select" id="fileSelect">
-                            <option value="">   Sélectionner un variable </option>
-                            {% for file in uploaded_files %}
-                            <option value="{{ file.id }}">{{ file.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <h6>Moyenne</h6>
-                                <span class="stat-value" id="meanValue">-</span>
-                            </div>
+                    <label class="form-label">Choisissez une variable pour les statistiques</label>
+                    <select class="form-select mb-3" id="statVariable">
+                        <option value="">Sélectionner une variable</option>
+                    </select>
+                    <button class="btn btn-outline-primary mb-3" id="btnCalculateStats">Calculer les statistiques</button>
+                    <div class="row text-center">
+                        <div class="col-md-2">
+                            <p><strong>Moyenne</strong></p>
+                            <p id="meanValue">-</p>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <h6>Médiane</h6>
-                                <span class="stat-value" id="medianValue">-</span>
-                            </div>
+                        <div class="col-md-2">
+                            <p><strong>Médiane</strong></p>
+                            <p id="medianValue">-</p>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <h6>Écart-type</h6>
-                                <span class="stat-value" id="stdValue">-</span>
-                            </div>
+                        <div class="col-md-2">
+                            <p><strong>Variance</strong></p>
+                            <p id="varianceValue">-</p>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <h6>Corrélation</h6>
-                                <span class="stat-value" id="correlationValue">-</span>
-                            </div>
+                        <div class="col-md-2">
+                            <p><strong>Quartiles</strong></p>
+                            <p id="quartilesValue">-</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p><strong>Skewness</strong></p>
+                            <p id="skewnessValue">-</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p><strong>Kurtosis</strong></p>
+                            <p id="kurtosisValue">-</p>
                         </div>
                     </div>
                 </div>
@@ -202,6 +195,7 @@
         </div>
     </div>
 </div>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization.css') }}">
 
 {% endblock %}
@@ -209,9 +203,5 @@
 {% block scripts %}
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- html2canvas for chart export -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
 <script src="{{ url_for('static', filename='js/visualization.js') }}"></script>
 {% endblock %}
-
-
