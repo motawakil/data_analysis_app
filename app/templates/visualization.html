@@ -94,16 +94,28 @@
 
 
  <!-- Filter Options -->
- <div class="mb-4">
+<!-- Filter Options -->
+<!-- Filter Options -->
+<div class="mb-4">
     <label class="form-label">Filtrer les données</label>
+
+    <!-- Filter Type Dropdown -->
     <select class="form-select mb-2" id="filterType">
         <option value="">Aucun filtre</option>
         <option value="top">Top</option>
         <option value="below">Below</option>
+        <option value="x_axis_gt">Axe X > </option>
+        <option value="x_axis_lt">Axe X < </option>
+        <option value="y_axis_gt">Axe Y > </option>
+        <option value="y_axis_lt">Axe Y < </option>
     </select>
-    <input type="number" class="form-control" id="filterValue" placeholder="Nombre de valeurs">
-    <small class="text-muted">Spécifiez le nombre de valeurs à filtrer.</small>
+
+    <!-- Filter Value Input -->
+    <input type="number" class="form-control" id="filterValue" placeholder="Valeur à filtrer">
+    <small class="text-muted">Spécifiez la valeur pour le filtre sélectionné.</small>
 </div>
+
+
                     <!-- Export Options -->
                     <div class="mb-4">
                         <label class="form-label">Exporter le graphique</label>
@@ -150,48 +162,66 @@
             </div>
         </div>
     </div>
+
+
+
+
+ <!-- Statistics -->
+ <div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Statistiques</h5>
+    </div>
+    <div class="card-body">
+        <label class="form-label">Choisissez une variable pour les statistiques</label>
+        <select class="form-select mb-3" id="statVariable">
+            <option value="">Sélectionner une variable</option>
+        </select>
+        
+
+        <p id="errorMessage" style="display: none; color: red;">
+            Veuillez entrer une valeur numérique valide.
+        </p>
+   
+        <div class="row text-center">
+            <div class="col-md-2">
+                <p><strong>Moyenne</strong></p>
+                <p id="meanValue">-</p>
+            </div>
+            <div class="col-md-2">
+                <p><strong>Médiane</strong></p>
+                <p id="medianValue">-</p>
+            </div>
+            <div class="col-md-2">
+                <p><strong>Variance</strong></p>
+                <p id="varianceValue">-</p>
+            </div>
+            <div class="col-md-2">
+                <p><strong>Quartiles</strong></p>
+                <p id="quartilesValue">-</p>
+            </div>
+            <div class="col-md-2">
+                <p><strong>Skewness</strong></p>
+                <p id="skewnessValue">-</p>
+            </div>
+            <div class="col-md-2">
+                <p><strong>Kurtosis</strong></p>
+                <p id="kurtosisValue">-</p>
+            </div>
+        </div>
+
+
+    </div>
+    <button id="btnCalculateStats" class="btn btn-primary">Calculer les statistiques</button>
 </div>
 
 
-            <!-- Statistics -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Statistiques</h5>
-                </div>
-                <div class="card-body">
-                    <label class="form-label">Choisissez une variable pour les statistiques</label>
-                    <select class="form-select mb-3" id="statVariable">
-                        <option value="">Sélectionner une variable</option>
-                    </select>
-                    <button class="btn btn-outline-primary mb-3" id="btnCalculateStats">Calculer les statistiques</button>
-                    <div class="row text-center">
-                        <div class="col-md-2">
-                            <p><strong>Moyenne</strong></p>
-                            <p id="meanValue">-</p>
-                        </div>
-                        <div class="col-md-2">
-                            <p><strong>Médiane</strong></p>
-                            <p id="medianValue">-</p>
-                        </div>
-                        <div class="col-md-2">
-                            <p><strong>Variance</strong></p>
-                            <p id="varianceValue">-</p>
-                        </div>
-                        <div class="col-md-2">
-                            <p><strong>Quartiles</strong></p>
-                            <p id="quartilesValue">-</p>
-                        </div>
-                        <div class="col-md-2">
-                            <p><strong>Skewness</strong></p>
-                            <p id="skewnessValue">-</p>
-                        </div>
-                        <div class="col-md-2">
-                            <p><strong>Kurtosis</strong></p>
-                            <p id="kurtosisValue">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+
+
+           
+
+
+
         </div>
     </div>
 </div>

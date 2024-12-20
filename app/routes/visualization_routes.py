@@ -5,6 +5,8 @@ from app.visualization.matplotlib_charts import *
 from app.visualization.seaborn_charts import *
 import matplotlib.pyplot as plt
 
+from scipy.stats import skew, kurtosis
+
 # Create a Blueprint
 visualization_bp = Blueprint('visualization', __name__)
 
@@ -32,6 +34,7 @@ def get_columns():
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         columns = csv.DictReader(file).fieldnames
+        print("columns" , columns)
     return jsonify({'status': 'success', 'columns': columns})
 
 
@@ -54,25 +57,32 @@ def get_chart_options():
 
     # Determine the best chart types based on X and Y axes data types
     chart_types = []
+# Détermine les types de graphiques en fonction des types de données des axes X et Y
+
+
     if x_is_numeric:
-        if not y_is_numeric:
-            # Only numeric X axis, charts that can work with just X
-            chart_types = ['histogram']  # X is numeric, but no Y axis (single axis charts)
-        elif y_is_numeric:
-            # Both X and Y are numeric, charts that require both axes
-            chart_types = ['scatter', 'line', 'time_series']  # Both axes numeric
+        if y_is_numeric:
+            # Les deux axes sont numériques
+            chart_types = ['scatter', 'line', 'heatmap']  # Nuage de points, courbe, et carte de chaleur
+        else:
+            # X est numérique mais Y est manquant ou non-numerique
+            chart_types = ['histogram', 'kde']  # Histogramme et estimation de densité
 
-    elif not x_is_numeric and not y_is_numeric:
-        # Categorical X and Categorical Y, charts that require both axes to be categorical
-        chart_types = ['box']  # Categorical X, Categorical Y (Pie for categorical X only)
+    elif not x_is_numeric:
+        if y_is_numeric:
+            # X est catégoriel et Y est numérique
+            chart_types = ['bar', 'box', 'violin']  # Diagramme en barres, boîte à moustaches, et violon
+        elif y_axis == "" or y_axis is None:
 
-    elif not x_is_numeric and y_is_numeric:
-        # Categorical X and Numeric Y axis, charts that require a categorical X and numerical Y
-        chart_types = ['bar', 'box', 'heatmap']  # Categorical X, Numeric Y
+            # X est catégoriel sans Y
+            chart_types = ['pie', 'countplot']  # Camembert et décompte des catégories
+        else:
+            # Les deux axes sont catégoriels
+            chart_types = ['heatmap']  # Carte de chaleur pour les relations catégorielles croisées
 
-    elif not x_is_numeric and y_axis == None :
-        # Only Categorical X axis, charts that require only the X axis (no Y axis needed)
-        chart_types = ['pie' ]  # Categorical X without Y
+    # Affichage des types de graphiques possibles
+    print("Types de graphiques recommandés :", chart_types)
+
 
 
     return jsonify({'status': 'success', 'chart_types': chart_types})
@@ -93,7 +103,6 @@ def get_chart_function(library, chart_type):
     except KeyError:
         raise ValueError(f"Unsupported chart type: {chart_type} for library: {library}")
     
-
 @visualization_bp.route('/create-visualization', methods=['POST'])
 def create_visualization_route():
     data = request.json
@@ -101,13 +110,12 @@ def create_visualization_route():
     # Extract parameters
     file_name = data.get('file_name')
     chart_type = data.get('chart_type')
-   
     x_axis = data.get('x_axis')
     y_axis = data.get('y_axis')
-    filters = data.get('filters', {})
+    filter = data.get('filter')
     library = data.get('library')
-    print(library)
-    additional_params = data.get('additional_params', {})  # For extra customization like titles
+
+    print("filter:", filter)
 
     # Validate required parameters
     if not file_name or not chart_type:
@@ -131,20 +139,34 @@ def create_visualization_route():
             chart_args['x_axis'] = x_axis
         if y_axis:
             chart_args['y_axis'] = y_axis
-        if filters:
-            chart_args.update(filters)
-        if additional_params:
-            chart_args.update(additional_params)
+        if filter is None:
+            filter = {}
+
+        if filter:
+            filter_type = filter.get('type', '').replace('<', 'under').replace('>', 'over')
+            filter_value = filter.get('value', '')
+            chart_args['filter'] = filter
+        else:
+            filter_type = ''
+            filter_value = ''
 
         # Generate the chart
         print(chart_args)
         output_fig = chart_function(**chart_args)
 
+        # Modify the output path based on the presence of the filter
+        if filter:
+            output_path = os.path.join(
+                'charts',
+                f'{file_name.split(".")[0]}_{chart_type}_{library}_{filter_type}_{filter_value}_chart.png'
+            )
+        else:
+            output_path = os.path.join(
+                'charts',
+                f'{file_name.split(".")[0]}_{chart_type}_{library}_chart.png'
+            )
+
         # Save the chart
-        output_path = os.path.join(
-            'charts',
-            f'{file_name.split(".")[0]}_{chart_type}_{library}_chart.png'
-        )
         full_output_path = os.path.join(current_app.static_folder, output_path)
         output_fig.savefig(full_output_path)
 
@@ -156,19 +178,79 @@ def create_visualization_route():
 
 
 
-# Route to fetch columns for statistics (GET)
-@visualization_bp.route('/get-statistics-columns', methods=['GET'])
-def get_statistics_columns():
+# Route to calculate statistics
+@visualization_bp.route('/calculate-statistics', methods=['GET'])
+def calculate_statistics():
     filename = request.args.get('filename')
-    if not filename:
-        return jsonify({'status': 'error', 'message': 'No file specified'}), 400
+    variable = request.args.get('variable')
+    print('Filename:', filename)
+    print('Variable:', variable)
 
-    data_saved_path = os.path.join(current_app.static_folder, 'data_saved', filename)
-    if not os.path.exists(data_saved_path):
+    if not filename or not variable:
+        return jsonify({'status': 'error', 'message': 'File or variable not specified'}), 400
+
+    file_path = os.path.join(current_app.static_folder, 'data_saved', filename)
+    if not os.path.exists(file_path):
         return jsonify({'status': 'error', 'message': f'File {filename} not found'}), 404
 
-    with open(data_saved_path, mode='r', newline='', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        columns = reader.fieldnames
+    try:
+        df = pd.read_csv(file_path)
+        if variable not in df.columns:
+            return jsonify({'status': 'error', 'message': 'Variable not found in file'}), 400
 
-    return jsonify({'status': 'success', 'columns': columns})
+        column_data = df[variable].dropna()
+
+        stats = {
+            'mean': column_data.mean(),
+            'median': column_data.median(),
+            'variance': column_data.var(),
+            'quartiles': column_data.quantile([0.25, 0.5, 0.75]).to_dict(),
+            'skewness': skew(column_data),
+            'kurtosis': kurtosis(column_data)
+        }
+        return jsonify({'status': 'success', 'statistics': stats})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+
+# Route to fetch available filter options based on selected X and Y axes (GET)
+@visualization_bp.route('/get-filter-options', methods=['GET'])
+def get_filter_options():
+    x_axis = request.args.get('x_axis')
+    y_axis = request.args.get('y_axis')
+    
+    # Check if X axis is selected
+    if not x_axis:
+        return jsonify({'status': 'error', 'message': 'X-axis is required'}), 400
+
+    # Determine the data type of X and Y axes (for simplicity, we'll assume numeric or categorical)
+    x_is_numeric = is_column_numeric(x_axis)
+    y_is_numeric = is_column_numeric(y_axis) if y_axis else None
+
+    # Determine the best filter types based on X and Y axes data types
+    filter_types = []
+
+    # General filters for X axis
+    if x_is_numeric:
+        filter_types.extend(['Top', 'Below', 'Comparison (X_axis > )', 'Comparison (X_axis < )'])  # Filters for numeric data
+    else:
+        filter_types.append('Category filter')  # If X is categorical, add category filter
+
+    if y_is_numeric:
+        # If Y is numeric, allow comparison filters for Y
+        filter_types.append('Comparison (Y_axis > )')
+        filter_types.append('Comparison (Y_axis < )')
+    
+    # If there is no Y axis, do not show filters related to Y
+    if not y_axis:
+        filter_types = [filter for filter in filter_types if filter not in ['Comparison (Y_axis > )', 'Comparison (Y_axis < )']]
+    
+    # Show the filter types
+    print("Available Filters:", filter_types)
+
+    return jsonify({'status': 'success', 'filter_types': filter_types})
+
+def is_column_numeric(column_name):
+    # This is a dummy check. Replace this with logic to check the column data type in the actual file.
+    return column_name.lower() in ['age', 'income', 'value', 'quantity']  # Example numeric columns
