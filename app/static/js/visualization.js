@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnVisualize = document.getElementById('btnVisualize');
     const btnCalculateStats = document.getElementById('btnCalculateStats');
     const visualizationContainer = document.getElementById('visualizationContainer');
+    const downloadChartButton = document.getElementById('downloadChart');
+    const downloadPNG = document.getElementById('downloadPNG');
+    const downloadJPEG = document.getElementById('downloadJPEG');
+    const downloadPDF = document.getElementById('downloadPDF');
+    const username = document.getElementById('username').value; // Retrieve username
+
 
     // Fetch available files
     const fetchFiles = async () => {
@@ -20,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.value = file.id;
                 option.textContent = file.name;
                 fileSelect.appendChild(option);
+                                   // Load statistics when the page loads
+                                   document.addEventListener('DOMContentLoaded', loadStatistics);
             });
+            
         } catch (error) {
             console.error('Error fetching files:', error);
         }
@@ -36,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.status === 'success') {
+ 
                 const columns = data.columns;
 
                 // Reset dropdowns
@@ -79,12 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.status === 'success') {
+                    
                 chartType.innerHTML = '<option value="">Sélectionner un graphique</option>';
                 data.chart_types.forEach(chart => {
                     const option = document.createElement('option');
                     option.value = chart;
                     option.textContent = chart;
                     chartType.appendChild(option);
+    
                 });
             } else {
                 console.error('Error:', data.message);
@@ -126,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             x_axis: xAxisValue,
             y_axis: yAxisValue,
             library: library,
+            username:username,
             filter: filter // Send the filter data if present
         };
     
@@ -143,6 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.className = 'img-fluid';
                 visualizationContainer.innerHTML = '';
                 visualizationContainer.appendChild(img);
+
+                // Enable the download button and set the download action
+                downloadChartButton.disabled = false;
+                downloadChartButton.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = `/static/${data.output_path}`;
+                    link.download = 'chart.png';
+                    link.click();
+                };
             } else {
                 alert('Erreur: ' + data.message);
             }
@@ -191,13 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateStatistics = () => {
         const fileName = fileSelect.value;
         const variable = statVariable.value;
+        const username = document.getElementById('username').value; // Retrieve username
+
 
         if (!fileName || !variable) {
             alert('Veuillez sélectionner un fichier et une variable.');
             return;
         }
 
-        fetch(`/visualization/calculate-statistics?filename=${fileName}&variable=${variable}`)
+        fetch(`/visualization/calculate-statistics?filename=${fileName}&variable=${variable}&username=${username}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -233,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     fileSelect.addEventListener('change', () => {
+        loadStatistics() ;
         fetchColumns();
+        
     });
     xAxis.addEventListener('change', () => {
         fetchChartOptions();
@@ -252,3 +278,104 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial fetch
     fetchFiles();
 });
+
+async function loadStatistics() {
+    const username = document.getElementById('username').value; // Retrieve username
+    const fileName = fileSelect.value; // Retrieve file name 
+
+
+    // Send the username and file name as query parameters in the fetch request
+    const response = await fetch(`/visualization/get-statistics?username=${username}&file_name=${fileName}`);
+    const data = await response.json();
+
+    if (data.status === 'success') {
+        const statistics = data.statistics;
+        const statisticsContainer = document.querySelector('#statistics-container');
+        statisticsContainer.innerHTML = ''; // Clear existing stats
+
+        if (statistics.length > 0) {
+            statistics.forEach((stat, index) => {
+                const statElement = document.createElement('div');
+                statElement.classList.add('col-md-12', 'mb-4');
+                statElement.innerHTML = `
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6><strong>Statistique ${index + 1} of ${stat.column}</strong></h6>
+                            <button class="btn btn-danger btn-sm" onclick="deleteStatistic(${stat.id})">Supprimer</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Moyenne</strong></h6>
+                                        <p class="metric-value">${stat.mean || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Médiane</strong></h6>
+                                        <p class="metric-value">${stat.median || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Variance</strong></h6>
+                                        <p class="metric-value">${stat.variance || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Skewness</strong></h6>
+                                        <p class="metric-value">${stat.skewness || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Quartiles</strong></h6>
+                                        <p class="metric-value">${stat.quartiles || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="metric-card">
+                                        <h6 class="text-muted"><strong>Kurtosis</strong></h6>
+                                        <p class="metric-value">${stat.kurtosis || '-'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                statisticsContainer.appendChild(statElement);
+            });
+        } else {
+            const noStatsMessage = document.createElement('div');
+            noStatsMessage.classList.add('col-12', 'text-center');
+            noStatsMessage.innerHTML = '<p>Aucune statistique disponible.</p>';
+            statisticsContainer.appendChild(noStatsMessage);
+        }
+    } else {
+        console.error(data.message);
+    }
+}
+
+
+// Delete a statistic
+async function deleteStatistic(statId) {
+    const response = await fetch(`/visualization/delete-statistic/${statId}`, {
+        method: 'DELETE',
+    });
+
+    const data = await response.json();
+    if (data.status === 'success') {
+        alert('Statistic deleted successfully');
+        loadStatistics(); // Reload statistics after deletion
+    } else {
+        alert('Failed to delete statistic: ' + data.message);
+    }
+}
+
+
+
+
+
+        

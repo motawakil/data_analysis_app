@@ -4,7 +4,8 @@ from flask import Blueprint, current_app, jsonify, request
 from app.visualization.matplotlib_charts import *
 from app.visualization.seaborn_charts import *
 import matplotlib.pyplot as plt
-
+from database.models import db, Statistics , User , Chart  # Importing db and the Statistics model
+import pandas as pd
 from scipy.stats import skew, kurtosis
 
 # Create a Blueprint
@@ -29,6 +30,8 @@ def get_columns():
         return jsonify({'status': 'error', 'message': 'No file specified'}), 400
 
     file_path = os.path.join(current_app.static_folder, 'data_saved', filename)
+    
+
     if not os.path.exists(file_path):
         return jsonify({'status': 'error', 'message': f'File {filename} not found'}), 404
 
@@ -104,9 +107,12 @@ def get_chart_function(library, chart_type):
         return globals()[function_name]
     except KeyError:
         raise ValueError(f"Unsupported chart type: {chart_type} for library: {library}")
-    
+
+
 @visualization_bp.route('/create-visualization', methods=['POST'])
 def create_visualization_route():
+    from datetime import datetime
+    
     data = request.json
 
     # Extract parameters
@@ -116,6 +122,7 @@ def create_visualization_route():
     y_axis = data.get('y_axis')
     filter = data.get('filter')
     library = data.get('library')
+    username = data.get('username')
 
     print("filter:", filter)
 
@@ -155,7 +162,7 @@ def create_visualization_route():
         # Generate the chart
         print(chart_args)
         output_fig = chart_function(**chart_args)
-
+        
         # Modify the output path based on the presence of the filter
         if filter:
             output_path = os.path.join(
@@ -170,7 +177,27 @@ def create_visualization_route():
 
         # Save the chart
         full_output_path = os.path.join(current_app.static_folder, output_path)
+        print("image output path:", full_output_path)
         output_fig.savefig(full_output_path)
+
+        # Save chart information to the database
+        new_chart = Chart(
+            user=username,
+            file_path=file_path,
+            date=datetime.now(),
+            choix_X=x_axis,
+            choix_Y=y_axis,
+            filter_type=filter_type,
+            filter_value=filter_value,
+            library=library,
+            image_path=output_path
+        )
+
+        # Add to session and commit
+        db.session.add(new_chart)
+
+        #print("Saving statistics:", new_chart)
+        db.session.commit()
 
         return jsonify({'status': 'success', 'output_path': output_path})
     except ValueError as ve:
@@ -179,40 +206,6 @@ def create_visualization_route():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
-
-# Route to calculate statistics
-@visualization_bp.route('/calculate-statistics', methods=['GET'])
-def calculate_statistics():
-    filename = request.args.get('filename')
-    variable = request.args.get('variable')
-    print('Filename:', filename)
-    print('Variable:', variable)
-
-    if not filename or not variable:
-        return jsonify({'status': 'error', 'message': 'File or variable not specified'}), 400
-
-    file_path = os.path.join(current_app.static_folder, 'data_saved', filename)
-    if not os.path.exists(file_path):
-        return jsonify({'status': 'error', 'message': f'File {filename} not found'}), 404
-
-    try:
-        df = pd.read_csv(file_path)
-        if variable not in df.columns:
-            return jsonify({'status': 'error', 'message': 'Variable not found in file'}), 400
-
-        column_data = df[variable].dropna()
-
-        stats = {
-            'mean': column_data.mean(),
-            'median': column_data.median(),
-            'variance': column_data.var(),
-            'quartiles': column_data.quantile([0.25, 0.5, 0.75]).to_dict(),
-            'skewness': skew(column_data),
-            'kurtosis': kurtosis(column_data)
-        }
-        return jsonify({'status': 'success', 'statistics': stats})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
 
@@ -255,3 +248,128 @@ def get_filter_options():
 def is_column_numeric(column_name):
     # This is a dummy check. Replace this with logic to check the column data type in the actual file.
     return column_name.lower() in ['age', 'income', 'value', 'quantity']  # Example numeric columns
+
+
+
+
+
+
+@visualization_bp.route('/calculate-statistics', methods=['GET'])
+def calculate_statistics():
+    filename = request.args.get('filename')
+    variable = request.args.get('variable')
+    username = request.args.get('username')
+    print('Filename:', filename)
+    print('Variable:', variable)
+    print('username' , username)
+
+    if not filename or not variable:
+        return jsonify({'status': 'error', 'message': 'File or variable not specified'}), 400
+
+    file_path = os.path.join(current_app.static_folder, 'data_saved', filename)
+    if not os.path.exists(file_path):
+        return jsonify({'status': 'error', 'message': f'File {filename} not found'}), 404
+
+    try:
+        df = pd.read_csv(file_path)
+        if variable not in df.columns:
+            return jsonify({'status': 'error', 'message': 'Variable not found in file'}), 400
+
+        column_data = df[variable].dropna()
+
+        # Calculate statistics
+        stats = {
+            'mean': column_data.mean(),
+            'median': column_data.median(),
+            'variance': column_data.var(),
+            'quartiles': column_data.quantile([0.25, 0.5, 0.75]).to_dict(),
+            'skewness': skew(column_data),
+            'kurtosis': kurtosis(column_data)
+        }
+
+        # Save the statistics into the database
+        # Assuming user is authenticated and you have a way to get the current user
+        current_user = username  # Replace with actual logic to get the current user
+
+        statistics_entry = Statistics(
+            user=current_user,
+            file_path=filename,
+            column=variable,
+            mean=stats['mean'],
+            median=stats['median'],
+            variance=stats['variance'],
+            quartiles=str(stats['quartiles']),  # Save quartiles as a string
+            skewness=stats['skewness'],
+            kurtosis=stats['kurtosis']
+        )
+
+        # Add to the session and commit
+        db.session.add(statistics_entry)
+        print("Saving statistics:", stats)
+        db.session.commit()
+        saved_stat = Statistics.query.filter_by(file_path=filename, column=variable).first()
+        print("Saved stat:", saved_stat)
+        
+
+        return jsonify({'status': 'success', 'statistics': stats})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+
+
+@visualization_bp.route('/get-statistics', methods=['GET'])
+def get_statistics():
+    try:
+        # Get query parameters for username and file name
+        username = request.args.get('username')
+        file_name = request.args.get('file_name')
+        # Fetch user ID based on username
+        user = User.query.filter_by(username=username).first()  # Assuming you have a User model with a 'username' field
+        print("id" , user.id)
+        if not user:
+            return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+        # Now use the user_id to filter statistics
+        stats = Statistics.query.filter_by( file_path=file_name, user = username).all()
+        statistics_list = [
+            {
+                'id': stat.id,
+                'mean': stat.mean,
+                'median': stat.median,
+                'variance': stat.variance,
+                'quartiles': stat.quartiles,
+                'skewness': stat.skewness,
+                'kurtosis': stat.kurtosis,
+                'user': stat.user,  # User ID in the statistics
+                'file_path': stat.file_path ,  # File path in the statistics
+                'column' : stat.column
+
+            }
+            for stat in stats
+        ]
+        
+        return jsonify({'status': 'success', 'statistics': statistics_list})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@visualization_bp.route('/delete-statistic/<int:stat_id>', methods=['DELETE'])
+def delete_statistic(stat_id):
+    try:
+        # Fetch the statistic by id
+        stat = Statistics.query.get(stat_id)
+
+        if not stat:
+            return jsonify({'status': 'error', 'message': 'Statistic not found'}), 404
+        
+        # Delete the statistic from the database
+        db.session.delete(stat)
+        db.session.commit()
+
+        return jsonify({'status': 'success', 'message': 'Statistic deleted successfully'})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500

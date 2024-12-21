@@ -3,6 +3,12 @@
 {% block title %}Visualisation des Résultats{% endblock %}
 
 {% block content %}
+
+<head>
+    <!-- Add FontAwesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+
 <div class="container-fluid py-4">
     <div class="row">
         <!-- Sidebar Controls -->
@@ -68,15 +74,7 @@
                     <div class="mb-4">
                         <label class="form-label">Type de Graphique</label>
                         <select class="form-select" id="chartType">
-                            <option value="scatter">Graphique de dispersion</option>
-                            <option value="histogram">Histogramme</option>
-                            <option value="line">Courbe d'apprentissage</option>
-                            <option value="bar">Diagramme en barres</option>
-                            <option value="heatmap">Heatmap</option>
-                            <option value="pie">Pie/Donut Chart</option>
-                            <option value="box">Box Plot</option>
-                            <option value="bubble">Bubble Chart</option>
-                            <option value="time_series">Time Series Chart</option>
+               
                            
                         </select>
                     </div>
@@ -115,15 +113,17 @@
 </div>
 
 
-                    <!-- Export Options -->
-                    <div class="mb-4">
-                        <label class="form-label">Exporter le graphique</label>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary" id="exportPNG">Exporter en PNG</button>
-                            <button class="btn btn-outline-secondary" id="exportSVG">Exporter en SVG</button>
-                            <button class="btn btn-outline-success" id="exportPDF">Exporter en PDF</button>
-                        </div>
-                    </div>
+<!-- Export Options -->
+<div class="mb-4">
+    <label class="form-label">Exporter le graphique</label>
+    <div class="d-grid gap-2">
+        <button class="btn btn-outline-primary" id="downloadChart" disabled>
+            <i class="fas fa-download"></i> Download Chart
+        </button>
+    </div>
+</div>
+
+
 
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2">
@@ -153,6 +153,8 @@
                 <button class="btn btn-outline-primary btn-sm" id="annotateChart">
                     <i class="fas fa-pencil-alt"></i> Annoter le graphique
                 </button>
+                <input type="hidden" id="username" value="{{ session['username'] }}">
+
             </div>
         </div>
         <div class="card-body">
@@ -212,6 +214,20 @@
     </div>
     <button id="btnCalculateStats" class="btn btn-primary">Calculer les statistiques</button>
 </div>
+
+<!-- All Statistics -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Toutes les Statistiques</h5>
+    </div>
+    <div class="card-body">
+        <div class="row" id="statistics-container">
+            <!-- Dynamic content will be injected here -->
+        </div>
+    </div>
+</div>
+
+
 
 
 </div>
