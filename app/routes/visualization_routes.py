@@ -64,20 +64,22 @@ def get_chart_options():
         if y_is_numeric:
             # Les deux axes sont numériques
             chart_types = ['scatter', 'line', 'heatmap']  # Nuage de points, courbe, et carte de chaleur
-        else:
-            # X est numérique mais Y est manquant ou non-numerique
+        elif y_axis == "" or y_axis is None:
+            # X est numérique mais Y est manquant
             chart_types = ['histogram', 'kde']  # Histogramme et estimation de densité
+        else :            
+    # Ajout du swarm_plot pour X numérique et Y catégoriel
+            chart_types = ['swarm_plot'] 
 
     elif not x_is_numeric:
         if y_is_numeric:
             # X est catégoriel et Y est numérique
             chart_types = ['bar', 'box', 'violin']  # Diagramme en barres, boîte à moustaches, et violon
         elif y_axis == "" or y_axis is None:
-
             # X est catégoriel sans Y
-            chart_types = ['pie', 'countplot']  # Camembert et décompte des catégories
+            chart_types = ['pie']  # Camembert et décompte des catégories
         else:
-            # Les deux axes sont catégoriels
+            # Les deux axes sont catégorielles
             chart_types = ['heatmap']  # Carte de chaleur pour les relations catégorielles croisées
 
     # Affichage des types de graphiques possibles
@@ -234,8 +236,7 @@ def get_filter_options():
     # General filters for X axis
     if x_is_numeric:
         filter_types.extend(['Top', 'Below', 'Comparison (X_axis > )', 'Comparison (X_axis < )'])  # Filters for numeric data
-    else:
-        filter_types.append('Category filter')  # If X is categorical, add category filter
+    
 
     if y_is_numeric:
         # If Y is numeric, allow comparison filters for Y

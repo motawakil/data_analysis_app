@@ -5,7 +5,7 @@ import pandas as pd
 
 
 
-# Seaborn Bar Chart (X is categorical, Y is numeric or None)
+# Seaborn Bar Chart with Y-axis filters
 def sns_bar_chart(file_path, x_axis, y_axis=None, title=None, filter=None):
     df = pd.read_csv(file_path)
     
@@ -13,9 +13,11 @@ def sns_bar_chart(file_path, x_axis, y_axis=None, title=None, filter=None):
     if filter:
         filter_type = filter.get('type')
         filter_value = filter.get('value')
-        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
-            df = df[df[x_axis] > filter_value]
-
+        if filter_type == 'Comparison (Y_axis >)' and filter_value is not None and y_axis:
+            df = df[df[y_axis] > filter_value]
+        elif filter_type == 'Comparison (Y_axis <)' and filter_value is not None and y_axis:
+            df = df[df[y_axis] < filter_value]
+    
     fig, ax = plt.subplots(figsize=(10, 6))
     
     if y_axis:
@@ -35,17 +37,30 @@ def sns_bar_chart(file_path, x_axis, y_axis=None, title=None, filter=None):
     return fig
 
 
-# Seaborn Scatter Chart (Both X and Y are numeric)
+
+# Seaborn Scatter Chart with 6 Filters
 def sns_scatter_chart(file_path, x_axis, y_axis, title=None, filter=None):
     df = pd.read_csv(file_path)
     
-    # Apply filter if provided
+    # Apply filters if provided
     if filter:
         filter_type = filter.get('type')
         filter_value = filter.get('value')
-        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
+        
+        if filter_type == 'Top' and filter_value is not None:
+            df = df.nlargest(filter_value, x_axis)
+        elif filter_type == 'Below' and filter_value is not None:
+            df = df.nsmallest(filter_value, x_axis)
+        elif filter_type == 'Comparison (X_axis >)' and filter_value is not None:
             df = df[df[x_axis] > filter_value]
-
+        elif filter_type == 'Comparison (X_axis <)' and filter_value is not None:
+            df = df[df[x_axis] < filter_value]
+        elif filter_type == 'Comparison (Y_axis >)' and filter_value is not None:
+            df = df[df[y_axis] > filter_value]
+        elif filter_type == 'Comparison (Y_axis <)' and filter_value is not None:
+            df = df[df[y_axis] < filter_value]
+    
+    # Plot scatter chart
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.scatterplot(data=df, x=x_axis, y=y_axis, ax=ax, color='purple')
     ax.set_xlabel(x_axis)
@@ -83,23 +98,36 @@ def sns_histogram_chart(file_path, x_axis, title=None, filter=None):
     return fig
 
 
-# Seaborn Line Chart (Both X and Y are numeric)
+# Seaborn Line Chart with 6 Filters
 def sns_line_chart(file_path, x_axis, y_axis, title=None, filter=None):
     df = pd.read_csv(file_path)
     
-    # Apply filter if provided
+    # Apply filters if provided
     if filter:
         filter_type = filter.get('type')
         filter_value = filter.get('value')
-        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
+        
+        if filter_type == 'Top' and filter_value is not None:
+            df = df.nlargest(filter_value, x_axis)
+        elif filter_type == 'Below' and filter_value is not None:
+            df = df.nsmallest(filter_value, x_axis)
+        elif filter_type == 'Comparison (X_axis >)' and filter_value is not None:
             df = df[df[x_axis] > filter_value]
-
+        elif filter_type == 'Comparison (X_axis <)' and filter_value is not None:
+            df = df[df[x_axis] < filter_value]
+        elif filter_type == 'Comparison (Y_axis >)' and filter_value is not None:
+            df = df[df[y_axis] > filter_value]
+        elif filter_type == 'Comparison (Y_axis <)' and filter_value is not None:
+            df = df[df[y_axis] < filter_value]
+    
+    # Plot line chart
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.lineplot(data=df, x=x_axis, y=y_axis, ax=ax, color='green')
     ax.set_xlabel(x_axis)
     ax.set_ylabel(y_axis)
     ax.set_title(title or f"Line Chart: {y_axis} vs {x_axis}")
     return fig
+
 
 
 # Seaborn Pie Chart (X is categorical, Y is None)
@@ -125,20 +153,31 @@ def sns_pie_chart(file_path, x_axis, title=None, filter=None):
     return fig
 
 
-# Seaborn Heatmap (Both X and Y can be categorical or numeric)
+# Seaborn Heatmap with 6 Filters
 def sns_heatmap_chart(file_path, x_axis, y_axis, title=None, filter=None):
     df = pd.read_csv(file_path)
     
     if x_axis not in df.columns or y_axis not in df.columns:
         raise ValueError(f"Column '{x_axis}' or '{y_axis}' not found in the dataset.")
     
-    # Apply filter if provided
+    # Apply filters if provided
     if filter:
         filter_type = filter.get('type')
         filter_value = filter.get('value')
-        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
+        
+        if filter_type == 'Top' and filter_value is not None:
+            df = df.nlargest(filter_value, x_axis)
+        elif filter_type == 'Below' and filter_value is not None:
+            df = df.nsmallest(filter_value, x_axis)
+        elif filter_type == 'Comparison (X_axis >)' and filter_value is not None:
             df = df[df[x_axis] > filter_value]
-
+        elif filter_type == 'Comparison (X_axis <)' and filter_value is not None:
+            df = df[df[x_axis] < filter_value]
+        elif filter_type == 'Comparison (Y_axis >)' and filter_value is not None:
+            df = df[df[y_axis] > filter_value]
+        elif filter_type == 'Comparison (Y_axis <)' and filter_value is not None:
+            df = df[df[y_axis] < filter_value]
+    
     grouped_df = df.groupby([x_axis]).mean(numeric_only=True)[y_axis].reset_index()
 
     try:
@@ -152,19 +191,22 @@ def sns_heatmap_chart(file_path, x_axis, y_axis, title=None, filter=None):
     return fig
 
 
-# Seaborn Box Plot (X is categorical, Y is numeric or None)
+
+# Seaborn Box Plot with Y-axis filters
 def sns_box_chart(file_path, x_axis, y_axis=None, title=None, filter=None):
     df = pd.read_csv(file_path)
-    
+
     # Apply filter if provided
     if filter:
         filter_type = filter.get('type')
         filter_value = filter.get('value')
-        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
-            df = df[df[x_axis] > filter_value]
+        if filter_type == 'Comparison (Y_axis >)' and filter_value is not None and y_axis:
+            df = df[df[y_axis] > filter_value]
+        elif filter_type == 'Comparison (Y_axis <)' and filter_value is not None and y_axis:
+            df = df[df[y_axis] < filter_value]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    
+
     if y_axis:
         sns.boxplot(data=df, x=x_axis, y=y_axis, ax=ax)
         ax.set_title(title or f"Box Plot: {x_axis} vs {y_axis}")
@@ -172,6 +214,7 @@ def sns_box_chart(file_path, x_axis, y_axis=None, title=None, filter=None):
         sns.boxplot(data=df, x=x_axis, ax=ax)
         ax.set_title(title or f"Box Plot: {x_axis}")
     return fig
+
 
 
 # Seaborn KDE Plot (X is numeric, Y is None)
@@ -189,4 +232,31 @@ def sns_kde_chart(file_path, x_axis, title=None, filter=None):
     sns.kdeplot(data=df, x=x_axis, ax=ax, fill=True, color='blue')
     ax.set_xlabel(x_axis)
     ax.set_title(title or f"KDE Plot: {x_axis}")
+    return fig
+
+
+
+# Seaborn Swarm Plot
+def sns_swarm_plot_chart(file_path, x_axis, y_axis, filter=None, title=None):
+    df = pd.read_csv(file_path)
+
+    # Apply filter if provided
+    if filter:
+        filter_type = filter.get('type')
+        filter_value = filter.get('value')
+
+        # Handle different filter types
+        if filter_type == 'Comparison (X_axis > )' and filter_value is not None:
+            df = df[df[x_axis] > filter_value]
+        elif filter_type == 'Comparison (X_axis < )' and filter_value is not None:
+            df = df[df[x_axis] < filter_value]
+        elif filter_type == 'Top' and filter_value is not None:
+            df = df.nlargest(filter_value, x_axis)
+        elif filter_type == 'Below' and filter_value is not None:
+            df = df.nsmallest(filter_value, x_axis)
+
+    # Plot swarm plot using Seaborn
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.swarmplot(data=df, x=x_axis, y=y_axis, ax=ax, palette="viridis", alpha=0.7)
+    ax.set_title(title or f"Swarm Plot: {x_axis} vs {y_axis}")
     return fig
