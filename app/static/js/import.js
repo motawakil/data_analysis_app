@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNext = document.getElementById('btnNext');
     const actionButtons = document.getElementById('actionButtons');
     const progressBar = document.getElementById('progressBar');
-
-
-
     const prepareDataButton = document.getElementById('prepareDataButton');
+    const goToVisualizationButton = document.getElementById('goToVisualizationButton');
+
+
     
     prepareDataButton.addEventListener('click', async () => {
         try {
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update preprocessing results section with success message
                 const preprocessingDiv = document.getElementById('preprocessingResults');
                 preprocessingDiv.classList.remove('d-none');
+                goToVisualizationButton.classList.remove('d-none');
                 preprocessingDiv.innerHTML = `
                     
                     ${preprocessingDiv.innerHTML}
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Scroll to the message
                 preprocessingDiv.scrollIntoView({ behavior: 'smooth' });
             } else {
-                throw new Error(data.error);
+                alert('Erreur: ' + data.message);
             }
         } catch (error) {
             // Show error message
@@ -68,14 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(header => header !== 'Actions');
         
         const rows = Array.from(table.querySelectorAll('tbody tr'));
-        return rows.map(row => {
-            const cells = Array.from(row.querySelectorAll('td'));
+        const data = [];
+        
+        rows.forEach(row => {
             const rowData = {};
+            const cells = row.querySelectorAll('td:not(:last-child)');
             headers.forEach((header, index) => {
                 rowData[header] = cells[index].textContent;
             });
-            return rowData;
+            data.push(rowData);
         });
+        
+        return data;
     }
 
 
@@ -90,6 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to create table rows for preview
     function createTablePreview(data) {
+        if (!data || data.length === 0) {
+            console.error('No data available for preview.');
+            return;
+            
+        }
+        
+        // Remove the d-none class to make the preview section visible
+        previewSection.classList.remove('d-none');
+
+
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
         // Add data headers
@@ -111,14 +126,30 @@ document.addEventListener('DOMContentLoaded', () => {
         data.forEach((row, rowIndex) => {
             const tr = document.createElement('tr');
             tr.dataset.rowIndex = rowIndex;
+
+            let hasMissingValues = false;
             // Add data cells
             headers.forEach(header => {
                 const td = document.createElement('td');
-                td.textContent = row[header];
-                td.dataset.original = row[header];
+                const value = row[header];
+                td.textContent = value;
+                td.dataset.original = value;
                 td.dataset.column = header;
+    
+                // Check for missing values
+                if (!value || value.toString().trim() === '') {
+                    td.classList.add('missing-value');
+                    hasMissingValues = true;
+                }
+    
                 tr.appendChild(td);
             });
+
+             // Add highlighting for rows with missing values
+            if (hasMissingValues) {
+            tr.classList.add('missing-row');
+        }
+
             
             const actionsTd = document.createElement('td');
             actionsTd.style.textAlign = 'center';
@@ -128,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             editBtn.innerHTML = '<i class="fas fa-edit"></i> Modifier';
             editBtn.onclick = () => toggleEditMode(tr, editBtn);
 
-             const deleteBtn = document.createElement('button');
+            const deleteBtn = document.createElement('button');
             deleteBtn.className = 'btn btn-danger btn-sm';
             deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Supprimer';
             deleteBtn.onclick = () => tr.remove();
@@ -139,14 +170,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
             tableBody.appendChild(tr);
         });
+        // Add legend
+    const legend = document.createElement('div');
+    legend.className = 'missing-values-legend';
+    legend.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+            <span>Les cellules surlignées en rouge indiquent des valeurs manquantes</span>
+        </div>
+    `;
+    previewSection.querySelector('.card-body').appendChild(legend);
+}
         
-    }
+    
     function toggleEditMode(row, editBtn) {
     const cells = row.querySelectorAll('td:not(:last-child)');
     const isEditing = row.classList.contains('editing');
 
     if (isEditing) {
-        // Save mode
+        // 
+        //  mode
         row.classList.remove('editing');
         cells.forEach(cell => {
             cell.contentEditable = 'false';
@@ -168,28 +211,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     // Simulate progress bar
-    function simulateProgressBar() {
-        const progressBarFill = document.querySelector('.progress-bar');
-        let progress = 0;
-
-        return new Promise(resolve => {
-            const interval = setInterval(() => {
-                progress += 5;
-                progressBarFill.style.width = `${progress}%`;
-                progressBarFill.textContent = `${progress}%`;
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    resolve();
-                }
-            }, 100);
-        });
+// Replace the progress bar related code with this:
+function simulateProgressBar() {
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    if (!progressBarContainer) {
+        console.error('Progress bar container not found');
+        return Promise.resolve();
     }
+
+    const progressBarFill = progressBarContainer.querySelector('.progress-bar');
+    progressBarContainer.classList.remove('d-none');
+    let progress = 0;
+
+    return new Promise(resolve => {
+        const interval = setInterval(() => {
+            progress += 5;
+   
+            progressBarFill.style.width = `${progress}%`;
+            progressBarFill.textContent = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                progressBarContainer.classList.add('d-none');
+                resolve();
+            }
+        }, 100);
+    });
+}
 
     // File input change handler
     fileInput.addEventListener('change', async (event) => {
         const file = event.target.files[0];
+        if (!file) return;
         if (file) {
+            if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                const formData = new FormData();
+                formData.append('file', file);
+    
+                try {
+                    const response = await fetch('/import_routes/upload', {
+                        method: 'POST',
+
+                        body: formData
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to upload Excel file');
+                    }
+    
+                    const data = await response.json();
+                    
+                    previewSection.classList.remove('d-none');
+                    btnNext.disabled = true;
+                    await simulateProgressBar();
+                    createTablePreview(data.data);
+                    btnNext.disabled = false;
+                    dataLoaded = true;
+                } catch (error) {
+                    console.error('Excel upload error:', error);
+                    alert('Erreur lors du chargement du fichier Excel.');
+                }
+                return;
+            }
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const fileContent = e.target.result;
@@ -335,94 +418,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // saving the page js code 
 // Event listener for "Download Page as PDF" button
-document.getElementById("downloadPageButton").addEventListener("click", function () {
+document.getElementById("downloadPageButton").addEventListener("click", function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
-    // Set title for the PDF
-    doc.setFontSize(20);
-    doc.text("Data Importation Results", 20, 20);
+    let yOffset = 20;
 
-    let yOffset = 30; // Set starting Y position for content
+    // Set document title
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("Data Import Report", doc.internal.pageSize.getWidth() / 2, yOffset, { align: "center" });
+    yOffset += 20;
 
-    // Capture the content of the card-body sections (tables and plot)
-    let content = document.querySelectorAll(".card-body");
 
-    // Iterate through all card content and add them to the PDF
-    content.forEach(function (section) {
-        // Add text content of the section to the PDF
+    // 2. Add File Information Table
+    const infoTable = document.querySelector('.table.table-bordered.table-striped');
+    if (infoTable) {
+        // Add section title
         doc.setFontSize(12);
-        doc.text(section.innerText || section.textContent, 20, yOffset);
+        doc.setFont("helvetica", "bold");
+        doc.text("File Information", 20, yOffset);
+        yOffset += 10;
 
-        // Adjust yOffset for the next section
-        yOffset += 20;
-    });
+        // Get table data
+        const infoRows = Array.from(infoTable.querySelectorAll('tbody tr'))
+            .map(row => [
+                row.querySelector('td:first-child').textContent,
+                row.querySelector('td:last-child').textContent
+            ]);
 
-    // Add the plot image if it exists
-    const plotImageDiv = document.getElementById('plotImageDiv');
-    if (plotImageDiv) {
-        let plotImage = plotImageDiv.querySelector('img');
-        if (plotImage) {
-            doc.addImage(plotImage.src, 'PNG', 20, yOffset, 180, 120);
-            yOffset += 130; // Adjust the Y position after adding the image
+        // Draw table
+        doc.autoTable({
+            head: [['Attribute', 'Value']],
+            body: infoRows,
+            startY: yOffset,
+            theme: 'grid',
+            styles: { fontSize: 8 },
+            margin: { top: 20, right: 20, bottom: 20, left: 20 }
+        });
+
+        yOffset = doc.lastAutoTable.finalY + 20;
+    }
+    // 4 add processing resulets 
+    const preprocessingDiv = document.getElementById('preprocessingResults');
+    if (preprocessingDiv) {
+        // Add section title
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Preprocessing Results", 20, yOffset);
+        yOffset += 10;
+
+        // Get preprocessing table data
+        const preprocessingTable = preprocessingDiv.querySelector('table');
+        if (preprocessingTable) {
+            const preprocessingHeaders = Array.from(preprocessingTable.querySelectorAll('thead th'))
+                .map(th => th.textContent);
+            
+            const preprocessingRows = Array.from(preprocessingTable.querySelectorAll('tbody tr'))
+                .map(row => Array.from(row.querySelectorAll('td'))
+                    .map(cell => cell.textContent));
+
+            // Draw preprocessing table
+            doc.autoTable({
+                head: [preprocessingHeaders],
+                body: preprocessingRows,
+                startY: yOffset,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                margin: { top: 20, right: 20, bottom: 20, left: 20 }
+            });
+
+            yOffset = doc.previousAutoTable.finalY + 20;
         }
     }
+    /// 3. Add Plot Image
+const plotImage = document.querySelector('#plotImageDiv img');
+if (plotImage && !plotImage.classList.contains('d-none')) {
+    doc.addPage();
 
-    // Save the PDF with a filename
-    doc.save("importation_results.pdf");
+    // Increase starting position from top
+    yOffset = 30; // Changed from 5 to 30
+
+    // Add section title
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Data Visualization", 20, yOffset);
+    yOffset += 20; // Changed from -10 to +20 to move down after title
+
+    // Calculate image dimensions
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const imgWidth = pageWidth - 40;
+    const imgHeight = (plotImage.height * imgWidth) / plotImage.width;
+
+    // Add image with adjusted position
+    doc.addImage(
+        plotImage.src,
+        'PNG',
+        20,
+        yOffset,
+        imgWidth,
+        imgHeight
+    );
+}
+
+    // Save the PDF
+    doc.save("data_import_report.pdf");
 });
 
 
 
 
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const applyPreprocessingBtn = document.getElementById('applyPreprocessing');
-    
-    applyPreprocessingBtn.addEventListener('click', function() {
-        const preprocessingOptions = {
-            missingValues: document.getElementById('missingValuesStrategy').value,
-            scaling: document.getElementById('scalingStrategy').value,
-            encoding: document.getElementById('encodingStrategy').value,
-            duplicates: document.getElementById('duplicatesStrategy').value
-        };
-
-        // Show loading state
-        applyPreprocessingBtn.disabled = true;
-        applyPreprocessingBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Traitement...';
-
-        // Send preprocessing options to backend
-        fetch('/apply_preprocessing', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(preprocessingOptions)
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Update the preprocessing results section
-            const preprocessingResults = document.getElementById('preprocessingResults');
-            preprocessingResults.classList.remove('d-none');
-            
-            // Reset button state
-            applyPreprocessingBtn.disabled = false;
-            applyPreprocessingBtn.innerHTML = 'Appliquer les traitements <i class="fas fa-cogs ms-2"></i>';
-            
-            // Show success message
-            alert('Prétraitement appliqué avec succès!');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            applyPreprocessingBtn.disabled = false;
-            applyPreprocessingBtn.innerHTML = 'Appliquer les traitements <i class="fas fa-cogs ms-2"></i>';
-            alert('Erreur lors du prétraitement');
-        });
-    });
-});
 
 
 
@@ -435,60 +539,74 @@ function getTableData() {
         .filter(header => header !== 'Actions');
     
     const rows = Array.from(table.querySelectorAll('tbody tr'));
-    return rows.map(row => {
-        const cells = Array.from(row.querySelectorAll('td'));
+    const data = [];
+    
+    rows.forEach(row => {
         const rowData = {};
+        const cells = row.querySelectorAll('td:not(:last-child)');
         headers.forEach((header, index) => {
             rowData[header] = cells[index].textContent;
         });
-        return rowData;
+        data.push(rowData);
     });
+    
+    return data;
 }
 
-// Add event listener for prepare data button
-document.getElementById('prepareDataButton').addEventListener('click', async () => {
+
+
+
+
+// Update prepare data button click handler
+document.getElementById('prepareDataButton').addEventListener('click', () => {
+    const modal = new bootstrap.Modal(document.getElementById('filenameModal'));
+    modal.show();
+});
+
+document.getElementById('saveFileBtn').addEventListener('click', async () => {
     try {
-        const button = document.getElementById('prepareDataButton');
-        button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Préparation en cours...';
+        const filename = document.getElementById('customFilename').value.trim();
+        if (!filename) {
+            alert('Veuillez entrer un nom de fichier');
+            return;
+        }
 
         const tableData = getTableData();
-        
+        console.log('Sending data:', { tableData, filename }); // Debug log
+
         const response = await fetch('/import_routes/prepare_data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ tableData })
+            body: JSON.stringify({
+                tableData: tableData,
+                filename: filename
+            })
         });
 
-        const data = await response.json();
-        
-        if (response.ok) {
-            // Update preprocessing results section
-            const preprocessingDiv = document.getElementById('preprocessingResults');
-            preprocessingDiv.innerHTML = `
-                <div class="card-body">
-                    <h5 class="alert alert-success">
-                        ${data.message}
-                        <br>
-                       
-                    </h5>
-                    <!-- Display preprocessing results here -->
-                </div>
-            `;
-            preprocessingDiv.classList.remove('d-none');
-        } else {
-            throw new Error(data.error);
+        const data = await response.json();        
+        if (!response.ok) {
+            throw new Error(data.error || 'Erreur lors du traitement');
         }
+
+        // Hide modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('filenameModal'));
+        modal.hide();
+
+        // Show success message
+        const preprocessingDiv = document.getElementById('preprocessingResults');
+        preprocessingDiv.classList.remove('d-none');
+        preprocessingDiv.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                ${data.message}
+            </div>
+        `;
+
     } catch (error) {
+        console.error('Error:', error);
         alert('Erreur: ' + error.message);
-    } finally {
-        const button = document.getElementById('prepareDataButton');
-        button.disabled = false;
-        button.innerHTML = 'Préparer les données pour visualiser';
     }
 });
-
-
 

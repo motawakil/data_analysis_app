@@ -10,62 +10,81 @@
         <!-- Algorithm Selection Card -->
         <div class="col-md-4">
             <div class="card mb-4">
+<!-- File Selection -->
+<div class="mb-4">
+    <label class="form-label">Fichier à Analyser</label>
+    <div class="input-group">
+        <select class="form-select" id="fileSelect">
+            <option value="">Sélectionner un fichier</option>
+            {% for file in data_saved %}
+                <option value="{{ file.id }}">{{ file.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-primary" type="button" id="refreshFileList">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+    <small class="text-muted">Sélectionnez le fichier que vous souhaitez analyser</small>
+</div>
+
                 <div class="card-header">
                     <h5 class="card-title mb-0">Sélection de l'Algorithme</h5>
                 </div>
-                <div class="card-body">
-                    <div class="algorithm-selection">
-                        <div class="nav flex-column nav-pills" role="tablist">
-                            <div class="accordion" id="algorithmsAccordion">
-                                <!-- Regression -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#regressionCollapse">
-                                            Régression
-                                        </button>
-                                    </h2>
-                                    <div id="regressionCollapse" class="accordion-collapse collapse show" data-bs-parent="#algorithmsAccordion">
-                                        <div class="accordion-body">
-                                            <div class="nav flex-column nav-pills">
-                                                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#linearParams">Régression Linéaire</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#logisticParams">Régression Logistique</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#polynomialParams">Régression Polynomiale</button>
+                    
+                    <div class="card-body">
+                        <div id = "algorithmSelect" class="algorithm-selection">
+                            <div class="nav flex-column nav-pills" role="tablist">
+                                <div class="accordion" id="algorithmsAccordion">
+                                    <!-- Regression -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#regressionCollapse">
+                                                Régression
+                                            </button>
+                                        </h2>
+                                        <div id="regressionCollapse" class="accordion-collapse collapse show" data-bs-parent="#algorithmsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="nav flex-column nav-pills">
+                                                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#linearParams">Régression Linéaire</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#logisticParams">Régression Logistique</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#polynomialParams">Régression Polynomiale</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Clustering -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#clusteringCollapse">
-                                            Clustering
-                                        </button>
-                                    </h2>
-                                    <div id="clusteringCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
-                                        <div class="accordion-body">
-                                            <div class="nav flex-column nav-pills">
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#kmeansParams">K-Means</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#knnParams">K-NN</button>
+                                    
+                                    <!-- Clustering -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#clusteringCollapse">
+                                                Clustering
+                                            </button>
+                                        </h2>
+                                        <div id="clusteringCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="nav flex-column nav-pills">
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#kmeansParams">K-Means</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#knnParams">K-NN</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Advanced -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#advancedCollapse">
-                                            Avancé
-                                        </button>
-                                    </h2>
-                                    <div id="advancedCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
-                                        <div class="accordion-body">
-                                            <div class="nav flex-column nav-pills">
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#svmParams">SVM</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#decisionTreeParams">Arbres de décision</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#randomForestParams">Random Forest</button>
-                                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#neuralNetParams">Réseaux de neurones</button>
+                                    <!-- Advanced -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#advancedCollapse">
+                                                Avancé
+                                            </button>
+                                        </h2>
+                                        <div id="advancedCollapse" class="accordion-collapse collapse" data-bs-parent="#algorithmsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="nav flex-column nav-pills">
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#svmParams">SVM</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#decisionTreeParams">Arbres de décision</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#randomForestParams">Random Forest</button>
+                                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#neuralNetParams">Réseaux de neurones</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -75,115 +94,115 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Parameters Card -->
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Paramètres du Modèle</h5>
-                    <div>
-                        <button class="btn btn-outline-secondary me-2" id="btnReset">
-                            <i class="fas fa-undo me-2"></i>Réinitialiser
-                        </button>
-                        <button class="btn btn-primary" id="btnTrain">
-                            <i class="fas fa-play me-2"></i>Entraîner le Modèle
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <form id="modelForm" method="POST" action="/train_model">
-                        <div class="tab-content">
-                            <!-- Linear Regression Parameters -->
-                            <div class="tab-pane fade show active" id="linearParams">
-                                <h6 class="mb-3">Régression Linéaire</h6>
-                                <!-- Independent Variables -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Variables indépendantes 
-                                        <a href="https://example.com/docs/independent-variables" target="_blank" title="En savoir plus">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                    </label>
-                                    <select class="form-select" name="independent_variables" multiple>
-                                        <option>Variable 1</option>
-                                        <option>Variable 2</option>
-                                        <option>Variable 3</option>
-                                        <option>Variable 4</option>
-                                    </select>
-                                </div>
-                                <!-- Dependent Variable -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Variable dépendante 
-                                        <a href="https://example.com/docs/dependent-variable" target="_blank" title="En savoir plus">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                    </label>
-                                    <select class="form-select" name="dependent_variable">
-                                        <option>Variable cible</option>
-                                        <option>Variable 5</option>
-                                    </select>
-                                </div>
-                                <!-- Fit Intercept -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Inclure l'ordonnée à l'origine (fit_intercept) 
-                                        <a href="https://example.com/docs/fit-intercept" target="_blank" title="En savoir plus">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                    </label>
-                                    <select class="form-select" name="fit_intercept">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
-                                    </select>
-                                </div>
-                                <!-- Normalize -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Normaliser les données (normalize) 
-                                        <a href="https://example.com/docs/normalize" target="_blank" title="En savoir plus">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                    </label>
-                                    <select class="form-select" name="normalize">
-                                        <option value="false">Non</option>
-                                        <option value="true">Oui</option>
-                                    </select>
-                                </div>
-                                <!-- Positive Coefficients -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Forcer des coefficients positifs (positive) 
-                                        <a href="https://example.com/docs/positive-coefficients" target="_blank" title="En savoir plus">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                    </label>
-                                    <select class="form-select" name="positive">
-                                        <option value="false">Non</option>
-                                        <option value="true">Oui</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- K-Means Parameters -->
-                            <div class="tab-pane fade" id="kmeansParams">
-                                <h6 class="mb-3">K-Means Clustering</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre de clusters (K)</label>
-                                    <input type="number" class="form-control" name="n_clusters" min="2" value="3">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre maximum d'itérations</label>
-                                    <input type="number" class="form-control" name="max_iter" min="1" value="300">
-                                </div>
-                            </div>
-
-                            <!-- Other algorithm parameters... -->
+            <!-- Parameters Card -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Paramètres du Modèle</h5>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" id="btnReset">
+                                <i class="fas fa-undo me-2"></i>Réinitialiser
+                            </button>
+                            <button class="btn btn-primary" id="btnTrain">
+                                <i class="fas fa-play me-2"></i>Entraîner le Modèle
+                            </button>
                         </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form id="modelForm" method="POST" action="/train_model">
+                            <div class="tab-content">
+                                <!-- Linear Regression Parameters -->
+                                <div class="tab-pane fade show active" id="linearParams">
+                                    <h6 class="mb-3">Régression Linéaire</h6>
+                                    <!-- Independent Variables -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Variables indépendantes 
+                                            <a href="https://example.com/docs/independent-variables" target="_blank" title="En savoir plus">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-select" name="independent_variables" multiple>
+                                            <option>Variable 1</option>
+                                            <option>Variable 2</option>
+                                            <option>Variable 3</option>
+                                            <option>Variable 4</option>
+                                        </select>
+                                    </div>
+                                    <!-- Dependent Variable -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Variable dépendante 
+                                            <a href="https://example.com/docs/dependent-variable" target="_blank" title="En savoir plus">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-select" name="dependent_variable">
+                                            <option>Variable cible</option>
+                                            <option>Variable 5</option>
+                                        </select>
+                                    </div>
+                                    <!-- Fit Intercept -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Inclure l'ordonnée à l'origine (fit_intercept) 
+                                            <a href="https://example.com/docs/fit-intercept" target="_blank" title="En savoir plus">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-select" name="fit_intercept">
+                                            <option value="true">Oui</option>
+                                            <option value="false">Non</option>
+                                        </select>
+                                    </div>
+                                    <!-- Normalize -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Normaliser les données (normalize) 
+                                            <a href="https://example.com/docs/normalize" target="_blank" title="En savoir plus">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-select" name="normalize">
+                                            <option value="false">Non</option>
+                                            <option value="true">Oui</option>
+                                        </select>
+                                    </div>
+                                    <!-- Positive Coefficients -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Forcer des coefficients positifs (positive) 
+                                            <a href="https://example.com/docs/positive-coefficients" target="_blank" title="En savoir plus">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-select" name="positive">
+                                            <option value="false">Non</option>
+                                            <option value="true">Oui</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <!-- Split Method Selection -->
-                        <div class="mb-3">
+                                <!-- K-Means Parameters -->
+                                <div class="tab-pane fade" id="kmeansParams">
+                                    <h6 class="mb-3">K-Means Clustering</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre de clusters (K)</label>
+                                        <input type="number" class="form-control" name="n_clusters" min="2" value="3">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre maximum d'itérations</label>
+                                        <input type="number" class="form-control" name="max_iter" min="1" value="300">
+                                    </div>
+                                </div>
+
+                                <!-- Other algorithm parameters... -->
+                            </div>
+
+                            <!-- Split Method Selection -->
+                            <div class="mb-3">
                             <label class="form-label">
                                 Méthode de découpage des données 
                                 <a href="https://example.com/docs/split-methods" target="_blank" title="En savoir plus">
@@ -227,6 +246,8 @@
                     <h5 class="card-title mb-0">Résultats</h5>
                 </div>
                 <div class="card-body">
+
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="metric-card mb-3">
