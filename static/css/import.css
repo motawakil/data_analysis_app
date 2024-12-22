@@ -96,3 +96,122 @@ tr.editing {
 tr.editing .editing-cell:hover {
     background-color: #fffff0;
 }
+
+
+
+/* Progress bar container */
+#progressBarContainer {
+    margin: 20px 35px;
+}
+
+.button-container {
+    margin-left: 5px;
+    margin-right: 15px;
+}
+
+/* General button styles */
+.button-container .btn {
+    border-radius: 25px; /* Rounded corners */
+    padding: 10px 20px; /* Adjust padding */
+    font-size: 1rem; /* Adjust font size */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+}
+
+/* Primary button */
+.button-container .btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3); /* Gradient background */
+    border: none; /* Remove border */
+    color: white; /* Text color */
+}
+
+.button-container .btn-primary:hover {
+    background: linear-gradient(45deg, #0056b3, #003f7f); /* Hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+/* Secondary button */
+.button-container .btn-outline-secondary {
+    border: 2px solid #6c757d; /* Border color */
+    color: #6c757d; /* Text color */
+    background: white; /* Background color */
+}
+
+.button-container .btn-outline-secondary:hover {
+    background: #6c757d; /* Hover background */
+    color: white; /* Hover text color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+/* Success button */
+.button-container .btn-success {
+    background: linear-gradient(45deg, #28a745, #1e7e34); /* Gradient background */
+    border: none; /* Remove border */
+    color: white; /* Text color */
+}
+
+.button-container .btn-success:hover {
+    background: linear-gradient(45deg, #1e7e34, #155d27); /* Hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+/* Info button */
+.button-container .btn-info {
+    background: linear-gradient(45deg, #17a2b8, #117a8b); /* Gradient background */
+    border: none; /* Remove border */
+    color: white; /* Text color */
+}
+
+.button-container .btn-info:hover {
+    background: linear-gradient(45deg, #117a8b, #0d5c6b); /* Hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+
+
+.badge {
+    font-size: 0.875rem;
+}
+
+#missingValuesSection .table td {
+    vertical-align: middle;
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#missingValuesTable td {
+    padding: 0.5rem;
+}
+
+
+
+/* Add these styles for missing values highlighting */
+.missing-value {
+    background-color: #ffebee !important;
+    position: relative;
+}
+
+.missing-value::after {
+    content: "Valeur manquante";
+    position: absolute;
+    font-size: 0.75rem;
+    color: #d32f2f;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.missing-row {
+    border-left: 4px solid #d32f2f !important;
+}
+
+.missing-values-legend {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}

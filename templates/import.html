@@ -11,18 +11,45 @@
         <div class="card-body">
             <h5 class="card-title">Zone de Téléchargement</h5>
             <div class="upload-zone" id="dropZone">
-                <input type="file" id="fileInput" class="d-none" accept=".csv,.xlsx,.xls,.json">
+                <input type="file" id="fileInput" class="d-none" accept=".csv,.xlsx,.xls,.json,.xls">
                 <div class="text-center py-5">
                     <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
                     <p class="mb-2">Glissez votre fichier ici ou</p>
                     <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
                         Importer un fichier
                     </button>
-                    <p class="text-muted mt-2">Formats acceptés: CSV, Excel, JSON</p>
+                    <p class="text-muted mt-2">Formats acceptés: .CSV , Excel (.xlsx) , .JSON</p>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <!-- Add this before closing </div> of container -->
+<div class="modal fade" id="filenameModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nommer le fichier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="customFilename">Nom du fichier:</label>
+                    <input type="text" class="form-control" id="customFilename" 
+                           placeholder="Entrez le nom du fichier">
+                    <small class="text-muted">L'extension sera ajoutée automatiquement</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="saveFileBtn">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     <!-- Data Preview Section -->
     <div class="card mb-4 d-none" id="previewSection">
@@ -40,8 +67,10 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
+      
         </div>
     </div>
+
 
 
     <!-- Data information div -->
@@ -81,22 +110,31 @@
     <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
      </div>
 </div>
-
-    <!-- Navigation -->
-    <div class="d-flex justify-content-between">
+<div class="container">
+    <!-- Progress Bar Section -->
+    <div class="progress mb-3 d-none" id="progressBarContainer">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" 
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+    </div>
+    <div class="button-container d-flex justify-content-between">
+        <!-- Navigation -->
         <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i>Retour
         </a>
-        <!-- Replace the visualization button with -->
         <div>
             <button class="btn btn-primary me-2" id="btnNext" disabled>
-            Valider le choix <i class="fas fa-arrow-right ms-2"></i>
+                Valider le choix <i class="fas fa-arrow-right ms-2"></i>
             </button>
             <button class="btn btn-success d-none" id="prepareDataButton">
-             Préparer les données pour visualiser
+                Préparer les données pour visualiser
             </button>
+            <a href="{{ url_for('visualization') }}" class="btn btn-info d-none" id="goToVisualizationButton">
+                Aller à la visualisation<i class="fas fa-arrow-right ms-2"></i>
+            </a>
         </div>
     </div>
+</div>
+
 
 <!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/import.css') }}">
@@ -109,7 +147,8 @@
     
     <!-- jsPDF library for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <!-- Your Custom JS File -->
     <script src="{{ url_for('static', filename='js/import.js') }}"></script>
 
