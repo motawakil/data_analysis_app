@@ -1,4 +1,18 @@
 /* Visualization Page Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f8fc;
+    color: #333;
+}
+
+h1, h5 {
+    color: #3a6fc4;
+
+    animation: fadeIn 1s ease-out;
+}
+
+
+
 .chart-container {
     background-color: white;
     border-radius: 0.5rem;

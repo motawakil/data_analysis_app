@@ -1,0 +1,42 @@
+<!-- Paramètres K-Means -->
+
+    <h6 class="mb-3">K-Means</h6>
+
+    <!-- Préprocessing Parameters -->
+    <h6 class="mt-4">Préprocessing</h6>
+    <div class="mb-3">
+        <label class="form-label">Standardisation</label>
+        <select class="form-select">
+            <option value="yes">Oui</option>
+            <option value="no">Non</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Élimination des outliers</label>
+        <select class="form-select">
+            <option value="yes">Oui</option>
+            <option value="no">Non</option>
+        </select>
+    </div>
+
+    <!-- Training Parameters -->
+    <h6 class="mt-4">Entraînement</h6>
+    <div class="mb-3">
+        <label class="form-label">Nombre de clusters (n_clusters)</label>
+        <input type="number" class="form-control" placeholder="Ex: 3" min="1">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Méthode d'initialisation</label>
+        <select class="form-select">
+            <option value="kmeans++">k-means++</option>
+            <option value="random">Random</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre d’itérations maximum (max_iter)</label>
+        <input type="number" class="form-control" placeholder="Ex: 300" min="1">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Tolérance de convergence (tol)</label>
+        <input type="number" class="form-control" placeholder="Ex: 0.0001" step="0.0001" min="0">
+    </div>

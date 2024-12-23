@@ -1,4 +1,15 @@
 /* Import Page Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f8fc;
+    color: #333;
+}
+
+h1, h5 {
+    color: #3a6fc4;
+
+    animation: fadeIn 1s ease-out;
+}
 .upload-zone {
     border: 2px dashed #dee2e6;
     border-radius: 8px;

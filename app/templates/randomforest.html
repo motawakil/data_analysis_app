@@ -1,0 +1,76 @@
+<!-- Paramètres Random Forest -->
+
+    <h6 class="mb-3">Random Forest</h6>
+
+    <!-- Split Parameters -->
+    <div class="mb-3">
+        <label class="form-label">Type de Split</label>
+        <select class="form-select" id="splitType">
+            <option value="train_test">Train/Test Split</option>
+            <option value="k_fold">K-Fold</option>
+        </select>
+    </div>
+    <div id="splitOptions">
+        <div class="mb-3 train-test-options">
+            <label class="form-label">Pourcentage Train/Test</label>
+            <select class="form-select">
+                <option value="70_30">70% - 30%</option>
+                <option value="80_20">80% - 20%</option>
+                <option value="90_10">90% - 10%</option>
+            </select>
+        </div>
+        <div class="mb-3 k-fold-options" style="display: none;">
+            <label class="form-label">Nombre de Folds (K-Fold)</label>
+            <select class="form-select">
+                <option value="3">3 Folds</option>
+                <option value="5">5 Folds</option>
+                <option value="10">10 Folds</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Préprocessing Parameters -->
+    <h6 class="mt-4">Préprocessing</h6>
+    <div class="mb-3">
+        <label class="form-label">Encodage des catégories</label>
+        <select class="form-select">
+            <option value="one_hot">One-Hot Encoding</option>
+            <option value="label">Label Encoding</option>
+        </select>
+    </div>
+
+    <!-- Training Parameters -->
+    <h6 class="mt-4">Entraînement</h6>
+    <div class="mb-3">
+        <label class="form-label">Recherche d'hyperparamètres</label>
+        <select class="form-select">
+            <option value="grid_search">Grid Search</option>
+            <option value="random_search">Random Search</option>
+            <option value="manual">Manuel</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre d’arbres (n_estimators)</label>
+        <input type="number" class="form-control" placeholder="Entrez un nombre entier" id="n_estimators">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Critère d'évaluation</label>
+        <select class="form-select">
+            <option value="gini">Gini</option>
+            <option value="entropy">Entropy</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Profondeur maximale (max_depth)</label>
+        <input type="number" class="form-control" placeholder="Entrez un nombre entier" id="max_depth">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre minimum d’échantillons pour diviser un nœud (min_samples_split)</label>
+        <input type="number" class="form-control" placeholder="Entrez un nombre entier" id="min_samples_split">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre minimum d’échantillons par feuille (min_samples_leaf)</label>
+        <input type="number" class="form-control" placeholder="Entrez un nombre entier" id="min_samples_leaf">
+    </div>
+
+

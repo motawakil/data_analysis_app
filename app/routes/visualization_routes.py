@@ -373,3 +373,5 @@ def delete_statistic(stat_id):
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+

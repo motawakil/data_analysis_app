@@ -1,8 +1,14 @@
 /* General Styles */
 body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f8fc;
+    color: #333;
+}
+
+h1, h5 {
+    color: #3a6fc4;
+
+    animation: fadeIn 1s ease-out;
 }
 
 main {

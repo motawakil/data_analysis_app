@@ -143,3 +143,4 @@ def prepare_data():
     except Exception as e:
         print("Error in prepare_data:", str(e))  # Debug print
         return jsonify({'error': str(e)}), 500
+        

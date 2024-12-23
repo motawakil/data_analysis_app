@@ -1,0 +1,63 @@
+<!-- Paramètres SVM -->
+
+    <h6 class="mb-3">Support Vector Machine (SVM)</h6>
+
+    <!-- Split Parameters -->
+    <h6 class="mt-4">Paramètres de Split</h6>
+    <div class="mb-3">
+        <label class="form-label">Type de Split</label>
+        <select class="form-select">
+            <option value="train_test">Train/Test Split</option>
+            <option value="k_fold">K-Fold</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Options de Split</label>
+        <select class="form-select">
+            <option value="70_30">70%-30%</option>
+            <option value="80_20">80%-20%</option>
+            <option value="k_3">K-Fold: 3</option>
+            <option value="k_5">K-Fold: 5</option>
+            <option value="k_10">K-Fold: 10</option>
+        </select>
+    </div>
+
+    <!-- Préprocessing Parameters -->
+    <h6 class="mt-4">Préprocessing</h6>
+    <div class="mb-3">
+        <label class="form-label">Standardisation</label>
+        <select class="form-select">
+            <option value="standardize">Standardiser les Données</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Encodage des Catégories</label>
+        <select class="form-select">
+            <option value="one_hot">One-Hot Encoding</option>
+            <option value="label_encoding">Label Encoding</option>
+        </select>
+    </div>
+
+    <!-- Training Parameters -->
+    <h6 class="mt-4">Entraînement</h6>
+    <div class="mb-3">
+        <label class="form-label">Kernel</label>
+        <select class="form-select">
+            <option value="linear">Linear</option>
+            <option value="rbf">RBF</option>
+            <option value="poly">Polynomial</option>
+            <option value="sigmoid">Sigmoid</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Paramètre de Régularisation (C)</label>
+        <input type="number" class="form-control" placeholder="Ex: 1.0" min="0.0" step="0.1">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Paramètre du Kernel RBF (gamma)</label>
+        <input type="number" class="form-control" placeholder="Ex: 0.1, 1, 10" min="0.0" step="0.1">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre Maximum d’Itérations</label>
+        <input type="number" class="form-control" placeholder="-1 pour illimité" min="-1">
+    </div>

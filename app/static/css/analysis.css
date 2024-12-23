@@ -1,54 +1,153 @@
-/* Analysis Page Styles */
-.algorithm-selection .nav-link {
-    text-align: left;
-    padding: 0.5rem 1rem;
-    margin-bottom: 0.25rem;
-    border-radius: 0.25rem;
-    transition: all 0.2s ease;
+/* Styles généraux */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f8fc;
+    color: #333;
 }
 
-.algorithm-selection .nav-link:hover {
-    background-color: rgba(13, 110, 253, 0.1);
+h1, h5 {
+    color: #3a6fc4;
+    text-shadow: 1px 1px 4px rgba(58, 111, 196, 0.4);
+    animation: fadeIn 1s ease-out;
 }
 
-.algorithm-selection .nav-link.active {
-    background-color: #0d6efd;
-    color: white;
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.accordion-button:not(.collapsed) {
-    background-color: rgba(13, 110, 253, 0.1);
-    color: #0d6efd;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Boutons */
+.btn {
+    transition: all 0.3s ease;
+}
+/* Default button style */
+
+.btn-primary {
+    background-color: #3a6fc4;
+    border-color: #3a6fc4;
+}
+
+
+/* Active button style */
+.btn-light.active {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border-color: #007bff; /* Blue border */
+}
+
+.btn-primary:hover {
+    background-color: #2e59a0;
+    border-color: #2e59a0;
+}
+
+.btn-outline-primary {
+    color: #3a6fc4;
+    border-color: #3a6fc4;
+}
+
+.btn-outline-primary:hover {
+    background-color: #3a6fc4;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+/* Animations pour les cartes de métriques */
 .metric-card {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background-color: #f8f9fa;
-    transition: transform 0.3s ease;
-}
-
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    animation: slideIn 0.8s ease-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .metric-card h6 {
-    color: #6c757d;
-    margin-bottom: 0.5rem;
+    color: #3a6fc4;
 }
 
-.metric-card .progress {
-    height: 0.5rem;
-    background-color: #e9ecef;
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 8px;
+    animation: pulse 1s infinite;
 }
 
-.metric-card .metric-value {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #495057;
-}
-
+/* Progress bars */
 .progress-bar {
-    transition: width 0.6s ease;
+    background-color: #3a6fc4;
+    animation: fillBar 2s ease-out forwards;
+}
+
+/* Styles pour les textes et contenus */
+.accordion-button {
+    background-color: #eaf1fc;
+    color: #3a6fc4;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #fff;
+    background-color: #3a6fc4;
+}
+
+/* Footer du tableau des résultats */
+.card-footer {
+    background-color: #f4f8fc;
+    color: #3a6fc4;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes fillBar {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
 }

@@ -1,0 +1,80 @@
+<!-- Paramètres K-Nearest Neighbors (KNN) -->
+
+    <h6 class="mb-3">K-Nearest Neighbors</h6>
+
+    <!-- Split Parameters -->
+    <div class="mb-3">
+        <label class="form-label">Type de Split</label>
+        <select class="form-select" id="splitType">
+            <option value="train_test">Train/Test Split</option>
+            <option value="k_fold">K-Fold</option>
+        </select>
+    </div>
+    <div id="splitOptions">
+        <div class="mb-3 train-test-options">
+            <label class="form-label">Pourcentage Train/Test</label>
+            <select class="form-select">
+                <option value="70_30">70% - 30%</option>
+                <option value="80_20">80% - 20%</option>
+                <option value="90_10">90% - 10%</option>
+            </select>
+        </div>
+        <div class="mb-3 k-fold-options" style="display: none;">
+            <label class="form-label">Nombre de Folds (K-Fold)</label>
+            <select class="form-select">
+                <option value="3">3 Folds</option>
+                <option value="5">5 Folds</option>
+                <option value="10">10 Folds</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Préprocessing Parameters -->
+    <h6 class="mt-4">Préprocessing</h6>
+    <div class="mb-3">
+        <label class="form-label">Standardisation</label>
+        <select class="form-select">
+            <option value="yes">Oui</option>
+            <option value="no">Non</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Gestion des valeurs manquantes</label>
+        <select class="form-select">
+            <option value="mean">Remplacement par la moyenne</option>
+            <option value="median">Remplacement par la médiane</option>
+            <option value="knn">Imputation par les voisins les plus proches</option>
+        </select>
+    </div>
+
+    <!-- Training Parameters -->
+    <h6 class="mt-4">Entraînement</h6>
+    <div class="mb-3">
+        <label class="form-label">Recherche d'hyperparamètres</label>
+        <select class="form-select">
+            <option value="grid_search">Grid Search</option>
+            <option value="random_search">Random Search</option>
+            <option value="manual">Manuel</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre de voisins (n_neighbors)</label>
+        <input type="number" class="form-control" placeholder="Entrez un nombre entier" id="n_neighbors">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Distance de pondération</label>
+        <select class="form-select">
+            <option value="uniform">Uniforme</option>
+            <option value="distance">Distance</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Algorithme de recherche</label>
+        <select class="form-select">
+            <option value="auto">Auto</option>
+            <option value="ball_tree">Ball Tree</option>
+            <option value="kd_tree">KD Tree</option>
+            <option value="brute">Brute</option>
+        </select>
+    </div>
+

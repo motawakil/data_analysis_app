@@ -1,0 +1,61 @@
+<!-- Paramètres Arbre de Décision -->
+
+    <h6 class="mb-3">Arbre de Décision</h6>
+
+    <!-- Split Parameters -->
+    <h6 class="mt-4">Paramètres de Split</h6>
+    <div class="mb-3">
+        <label class="form-label">Type de Split</label>
+        <select class="form-select">
+            <option value="train_test">Train/Test Split</option>
+            <option value="k_fold">K-Fold</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Options de Split</label>
+        <select class="form-select">
+            <option value="70_30">70%-30%</option>
+            <option value="80_20">80%-20%</option>
+            <option value="k_3">K-Fold: 3</option>
+            <option value="k_5">K-Fold: 5</option>
+            <option value="k_10">K-Fold: 10</option>
+        </select>
+    </div>
+
+    <!-- Préprocessing Parameters -->
+    <h6 class="mt-4">Préprocessing</h6>
+    <div class="mb-3">
+        <label class="form-label">Encodage des Catégories</label>
+        <select class="form-select">
+            <option value="one_hot">One-Hot Encoding</option>
+            <option value="label_encoding">Label Encoding</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Normalisation</label>
+        <select class="form-select" disabled>
+            <option value="non_applicable">Non Applicable</option>
+        </select>
+    </div>
+
+    <!-- Training Parameters -->
+    <h6 class="mt-4">Entraînement</h6>
+    <div class="mb-3">
+        <label class="form-label">Profondeur Maximale</label>
+        <input type="number" class="form-control" placeholder="Ex: None pour illimité" min="1">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Critère d'Évaluation</label>
+        <select class="form-select">
+            <option value="gini">Gini</option>
+            <option value="entropy">Entropy</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre Minimum d'Échantillons pour Diviser un Nœud</label>
+        <input type="number" class="form-control" placeholder="Default: 2" min="2">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre Minimum d'Échantillons par Feuille</label>
+        <input type="number" class="form-control" placeholder="Default: 1" min="1">
+    </div>
