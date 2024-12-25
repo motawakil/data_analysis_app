@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const includeIntercept = document.getElementById('includeIntercept');
     const regularization = document.getElementById('regularization');
     const columnSelect = document.getElementById('columnSelect');
+    const choix_k = document.getElementById('n_neighbors');
+    const type_distance = document.getElementById('type_distance');
+    const algo_type = document.getElementById('Algotype') ; 
 
     // Fetch available files
     const fetchFiles = async () => {
@@ -67,40 +70,53 @@ document.addEventListener('DOMContentLoaded', () => {
     fileSelect.addEventListener('change', fetchColumns);
 
     // Get all the algorithm selection buttons
-    const buttons = document.querySelectorAll('.btn-light');
+const buttons = document.querySelectorAll('.btn-light');
 
-    // Get all the parameter sections
-    const allParams = document.querySelectorAll('.tab-pane');
+// Get all the parameter sections
+const allParams = document.querySelectorAll('.tab-pane');
+console.log("Parameters:", allParams);
 
-    // Initially hide all parameter sections
-    allParams.forEach(param => {
-        param.style.display = 'none';
-    });
+// Initially hide all parameter sections
+allParams.forEach(param => {
+    param.style.display = 'none';
+});
 
-    // Add event listeners to each button
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Get the target ID (which parameter section to display)
-            const targetId = button.getAttribute('data-target');
+// Declare a global variable to store the clicked button text
+let Algo_Choice = "";
 
-            // Hide all parameter sections
-            allParams.forEach(param => {
-                param.style.display = 'none';
-            });
+// Add event listeners to each button
+buttons.forEach(button => {
+    button.addEventListener('click', function () {
+        // Get and store the text value of the clicked button
+        Algo_Choice  = button.textContent.trim(); // Remove extra spaces
+        console.log("Clicked button text:", Algo_Choice );
 
-            // Show the selected parameter section
-            const targetParam = document.querySelector(targetId);
-            if (targetParam) {
-                targetParam.style.display = 'block';
-            }
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // Get the target ID (e.g., #knnParams)
+        const targetId = button.getAttribute('data-target');
 
-            // Add active class to the clicked button
-            button.classList.add('active');
+        // Hide all parameter sections
+        allParams.forEach(param => {
+            param.style.display = 'none';
         });
+
+        // Show the selected parameter section
+        const targetParam = document.querySelector(targetId);
+
+        if (targetParam) {
+            targetParam.style.display = 'block';
+        }
+
+        // Remove 'active' class from all buttons
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Add 'active' class to the clicked button
+        button.classList.add('active');
+        console.log("Button classes after click:", button.classList.value);
     });
+});
+
 
     // Handle split type change
     splitType.addEventListener('change', () => {
@@ -140,6 +156,36 @@ document.addEventListener('DOMContentLoaded', () => {
             hyperparameterSearch: hyperparameterSearch.value,
             includeIntercept: includeIntercept.value,
             regularizationMethod: regularization.value,
+        
+        };
+    };
+
+    // Function to get regression parameters
+    const getKNNParameters = () => {
+        const splitTypeValue = splitType.value;
+        const target = columnSelect.value;
+        let splitDetail = '';
+
+        if (splitTypeValue === 'train_test') {
+            splitDetail = trainTestPercentage.value;
+        } else if (splitTypeValue === 'k_fold') {
+            splitDetail = kFold.value;
+        }
+
+        return {
+            splitType: splitTypeValue,
+            splitDetail,
+            target,
+            standardisation: standardisation.value,
+            missingValuesHandling: missingValues.value,
+            encodingMethod: categoricalEncoding.value,
+            hyperparameterSearch: hyperparameterSearch.value,
+            //includeIntercept: includeIntercept.value,
+            // regularizationMethod: regularization.value,
+            choix_k: choix_k.value,
+            type_distance: type_distance.value
+
+
         };
     };
 
@@ -161,58 +207,80 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("r2Bar").style.width = `${Math.min(100, (performance.r2_score / maxR2) * 100)}%`;
     }
 
-    // Handle form submission for model training
-    if (btnTrain) {
-        btnTrain.addEventListener('click', async (e) => {
-            e.preventDefault();
-    
-            const selectedFile = fileSelect.value;
-            const target = columnSelect.value;
-    
-            // Check if the user selected the target column
-            if (!target) {
-                alert('Veuillez sélectionner une colonne cible pour l\'entraînement du modèle.');
-                return;
-            }
-    
-            if (!selectedFile) {
-                alert('Veuillez sélectionner un fichier.');
-                return;
-            }
-    
-            const parameters = getRegressionParameters();
-            const requestData = {
+// Handle form submission for model training
+if (btnTrain) {
+    btnTrain.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        // Log the chosen algorithm
+        console.log("Algorithm chosen is:", Algo_Choice);
+
+        const selectedFile = fileSelect.value;
+        const target = columnSelect.value;
+
+        // Validate inputs
+        if (!target) {
+            alert('Veuillez sélectionner une colonne cible pour l\'entraînement du modèle.');
+            return;
+        }
+
+        if (!selectedFile) {
+            alert('Veuillez sélectionner un fichier.');
+            return;
+        }
+
+        // Prepare request data based on the selected algorithm
+        let requestData = null;
+
+        if (Algo_Choice === "KNN") {
+            const parameters = getKNNParameters(); // Call your function to get KNN-specific parameters
+            requestData = {
+                file: selectedFile,
+                algorithm: 'KNN',
+                parameters,
+            };
+        } else if (Algo_Choice === "Régression Linéaire") {
+            const parameters = getRegressionParameters(); // Call your function to get regression-specific parameters
+            requestData = {
                 file: selectedFile,
                 algorithm: 'Regression',
                 parameters,
             };
-    
-            try {
-                const response = await fetch('/training/train_model', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData),
-                });
-    
-                const data = await response.json();
-                console.log('Response from server:', data);
-    
-                if (data.status === 'success' && data.performance) {
-                    // Display regression performance results
-                    displayRegressionResults(data.performance);
-                } else if (data.message && data.message.includes("The provided dataset does not contain a")) {
-                    // Alert for missing target column
-                    alert('La colonne cible sélectionnée est manquante ou invalide dans le fichier.');
-                } else {
-                    alert('Erreur lors de l\'entraînement du modèle');
-                }
-            } catch (error) {
-                console.error('Error sending data:', error);
-            }
-        });
-    }
-    
+        } else {
+            alert('Veuillez sélectionner un algorithme valide.');
+            return;
+        }
 
-});
+        try {
+            // Send request to the backend
+            const response = await fetch('/training/train_model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            const data = await response.json();
+            console.log('Response from server:', data);
+
+            // Handle the response and display results
+            if (data.status === 'success') {
+                if (data.algorithm === 'KNN' && data.performance) {
+                    displayKNNResults(data.performance); // Call function to display KNN results
+                } else if (data.algorithm === 'Regression' && data.performance) {
+                    displayRegressionResults(data.performance); // Call function to display regression results
+                }
+            } else if (data.message && data.message.includes("The provided dataset does not contain a")) {
+                alert('La colonne cible sélectionnée est manquante ou invalide dans le fichier.');
+            } else {
+                alert('Erreur lors de l\'entraînement du modèle.');
+            }
+        } catch (error) {
+            console.error('Error sending data:', error);
+            alert('Une erreur s\'est produite lors de l\'envoi des données.');
+        }
+    });
+}
+
+}); 

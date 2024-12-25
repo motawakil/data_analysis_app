@@ -1,6 +1,6 @@
 <!-- Paramètres K-Nearest Neighbors (KNN) -->
 
-    <h6 class="mb-3">K-Nearest Neighbors</h6>
+    <h6 class="mb-3"  >K-Nearest Neighbors</h6>
 
     <!-- Split Parameters -->
     <div class="mb-3">
@@ -63,7 +63,7 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Distance de pondération</label>
-        <select class="form-select">
+        <select class="form-select" id = "type_distance">
             <option value="uniform">Uniforme</option>
             <option value="distance">Distance</option>
         </select>
@@ -77,4 +77,12 @@
             <option value="brute">Brute</option>
         </select>
     </div>
+
+<!-- Target Selection Selection -->
+<div class="mb-3">
+    <label class="form-label">Sélectionner le variable target </label>
+    <select class="form-select" id="columnSelect">
+        <option value="">Sélectionner un fichier</option>
+    </select>
+</div>
 

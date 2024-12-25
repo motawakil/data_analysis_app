@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, current_app
 import os
-from app.ML_models.ml_model import LinearRegressionModel
+from app.ML_models.ml_model import LinearRegressionModel , KNNModel
 import pandas as pd 
 import csv  
 
@@ -41,6 +41,8 @@ def get_columns():
     return jsonify({'status': 'success', 'columns': columns})
 
 
+
+
     # Route to train model (POST) And receive the user choices 
 
 @training_bp.route("/train_model", methods=["POST"])
@@ -74,7 +76,8 @@ def train_model():
             # Send the performance metrics as JSON response
             return jsonify({
                 "status": "success",
-                "performance": result
+                "performance": result,
+                "algorithm" : algorithm
             }), 200
 
         # Handle unsupported algorithms
@@ -129,6 +132,53 @@ def train_regression_model(file, parameters, target):
         hyperparameters={"include_intercept": parameters.get("includeintercept", True)}
     )
     performance = regression_model.train(X, y)
+
+    # Log and return the performance metrics
+    print("Performance:", performance)
+    return performance
+
+
+
+def train_knn_model(file, parameters, target):
+    """
+    Wrapper function for training a KNN model.
+    """
+    # Normalize parameter keys to lowercase
+    parameters = {k.lower(): v for k, v in parameters.items()}
+
+    # Extract split type
+    split_type = parameters.get("splittype")
+    split_value = parameters.get("splitdetail")
+
+    # Construct the file path
+    file_path = os.path.join(current_app.static_folder, 'data_saved', file)
+
+    # Load the data into a DataFrame
+    try:
+        data = pd.read_csv(file_path)
+    except Exception as e:
+        raise ValueError(f"Error loading file: {e}")
+
+    # Ensure 'target' exists in the data
+    if target not in data.columns:
+        raise ValueError(f"The provided dataset does not contain a '{target}' column.")
+
+    # Split the data into features (X) and target (y)
+    X = data.drop(target, axis=1)
+    y = data[target]
+
+    # Pass split type and other parameters for model training
+    knn_model = KNNModel(
+        preprocessing_params=parameters,
+        split_params={"type": split_type, "train_size": split_value},
+        hyperparameters={
+            "n_neighbors": int(parameters.get("n_neighbors", 5)),
+            "weights": parameters.get("weights", "uniform"),
+            "algorithm": parameters.get("algorithm", "auto")
+        }
+    )
+
+    performance = knn_model.train(X, y)
 
     # Log and return the performance metrics
     print("Performance:", performance)

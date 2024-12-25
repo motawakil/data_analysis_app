@@ -1,13 +1,63 @@
+<!-- filepath: /C:/Users/DELL/Desktop/python project/data_analysis_app/app/templates/export.html -->
 {% extends "base.html" %}
 
-{% block title %}Exportation et Sauvegarde{% endblock %}
+{% block title %}Export & Dashboard{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4">Exportation et Sauvegarde</h1>
+    <input type='hidden'  id="username" value="{{ session['username'] }}">
+     <h1 class="mb-4" id="hi">  </h1>
 
-    <!-- Model Performance Summary -->
-    <div class="card mb-4">
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="input-group">
+                    <select class="form-select" id="fileSelect">
+                        <option value="">Sélectionner un fichier</option>
+                        {% for file in data_saved %}
+                            <option value="{{ file.name }}">{{ file.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="mt-4">
+        <p class="text-muted">Select a dataset to view charts and statistics.</p>
+    </div>
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     <!-- Model Performance Summary -->
+     <div class="card mb-4">
         <div class="card-header">
             <h5 class="card-title mb-0">Résumé des Performances</h5>
         </div>
@@ -212,9 +262,11 @@
         </div>
     </div>
 </div>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/export.css') }}">
+
 {% endblock %}
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/export.js') }}"></script>
-{% endblock %}
+{% endblock %}   

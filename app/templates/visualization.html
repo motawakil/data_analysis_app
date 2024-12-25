@@ -144,7 +144,7 @@
             <div class="btn-group">
                 <button class="btn btn-outline-secondary btn-sm" id="zoomIn">
                     <i class="fas fa-search-plus"></i>
-                </button>
+                </button><input type="hidden" id="username" value="{{ session['username'] }}">
                 <button class="btn btn-outline-secondary btn-sm" id="zoomOut">
                     <i class="fas fa-search-minus"></i>
                 </button>
@@ -154,7 +154,7 @@
                 <button class="btn btn-outline-primary btn-sm" id="annotateChart">
                     <i class="fas fa-pencil-alt"></i> Annoter le graphique
                 </button>
-                <input type="hidden" id="username" value="{{ session['username'] }}">
+                
 
             </div>
         </div>

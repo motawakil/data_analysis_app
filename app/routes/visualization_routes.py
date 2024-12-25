@@ -12,16 +12,16 @@ from scipy.stats import skew, kurtosis
 visualization_bp = Blueprint('visualization', __name__)
 
 # Route to fetch the list of available files (GET)
+# Route to fetch the list of available files (GET)
 @visualization_bp.route('/get-files', methods=['GET'])
 def get_files():
     data_saved_path = os.path.join(current_app.static_folder, 'data_saved')
     files = [
         {'id': file, 'name': file}
         for file in os.listdir(data_saved_path)
-        if file.endswith('.csv')
+        if file.endswith('.csv') and file != 'None.csv'
     ] if os.path.exists(data_saved_path) else []
     return jsonify(files)
-
 # Route to fetch the columns of a specific CSV file (GET)
 @visualization_bp.route('/get-columns', methods=['GET'])
 def get_columns():
@@ -373,5 +373,4 @@ def delete_statistic(stat_id):
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
 

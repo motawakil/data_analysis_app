@@ -154,65 +154,68 @@
             </div>       
         </div>
             
-
-
-
-           
             <div class="card mb-4">
               
 
 
                  <!-- Results Cardfor classification -->
 
-                <div class="card-body">
-
-
-                    <div class="row" style="display: none;" > 
-                        <div class="col-md-6">
-                            <div class="metric-card mb-3">
-                                <h6>Accuracy</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" style="width: 0%" id="accuracyBar"></div>
-                                </div>
-                                <span class="metric-value" id="accuracyValue">-</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="metric-card mb-3">
-                                <h6>Precision</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" style="width: 0%" id="precisionBar"></div>
-                                </div>
-                                <span class="metric-value" id="precisionValue">-</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="metric-card mb-3">
-                                <h6>Recall</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" style="width: 0%" id="recallBar"></div>
-                                </div>
-                                <span class="metric-value" id="recallValue">-</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="metric-card mb-3">
-                                <h6>F1 Score</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" style="width: 0%" id="f1Bar"></div>
-                                </div>
-                                <span class="metric-value" id="f1Value">-</span>
-                            </div>
-                        </div>
+               
+            
+<div class="card mb-4" id="ClassificationResultsCard" style="display: none;">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Résultats de Classification</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="metric-card mb-3">
+                    <h6>Accuray</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="mseBar"></div>
                     </div>
+                    <span class="metric-value" id="Accuray">-</span>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="metric-card mb-3">
+                    <h6>Precision</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="maeBar"></div>
+                    </div>
+                    <span class="metric-value" id="precesion">-</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="metric-card mb-3">
+                    <h6>Recall</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="r2Bar"></div>
+                    </div>
+                    <span class="metric-value" id="recall">-</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="metric-card mb-3">
+                    <h6>F1-Score</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="r2Bar"></div>
+                    </div>
+                    <span class="metric-value" id="f1score">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
 
 
             <!-- Regression Results Card -->
+
+            
 <div class="card mb-4" id="regressionResultsCard" style="display: none;">
     <div class="card-header">
         <h5 class="card-title mb-0">Résultats de Régression</h5>

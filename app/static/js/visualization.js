@@ -273,7 +273,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     btnVisualize.addEventListener('click', visualizeData);
-    btnCalculateStats.addEventListener('click', calculateStatistics);
+    // btnCalculateStats.addEventListener('click', calculateStatistics);
+    btnCalculateStats.addEventListener('click', () => {
+       calculateStatistics() , 
+       loadStatistics() ;
+
+    });
+    
 
     // Initial fetch
     fetchFiles();

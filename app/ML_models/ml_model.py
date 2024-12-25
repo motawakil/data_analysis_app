@@ -3,6 +3,9 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.linear_model import LinearRegression
 import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 import numpy as np
 
 class BaseModel:
@@ -144,3 +147,29 @@ class LinearRegressionModel(BaseModel):
         # Evaluate performance
         performance = self.evaluate(y_test, y_pred)
         return performance
+
+
+
+
+
+class KNNModel(BaseModel):
+    def __init__(self, preprocessing_params, split_params, hyperparameters):
+        super().__init__(preprocessing_params, split_params)
+        self.hyperparameters = hyperparameters
+        self.model = KNeighborsClassifier(
+            n_neighbors=hyperparameters.get("n_neighbors", 5),
+            weights=hyperparameters.get("weights", "uniform"),
+            algorithm=hyperparameters.get("algorithm", "auto")
+        )
+
+    def evaluate(self, y_true, y_pred):
+        """
+        Calculates classification performance metrics.
+        """
+        metrics = {
+            "accuracy": accuracy_score(y_true, y_pred),
+            "precision": precision_score(y_true, y_pred, average="weighted"),
+            "recall": recall_score(y_true, y_pred, average="weighted"),
+            "f1_score": f1_score(y_true, y_pred, average="weighted"),
+        }
+        return metrics
