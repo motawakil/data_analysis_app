@@ -1,27 +1,37 @@
 <!-- Paramètres Régression Linéaire -->
 <h6 class="mb-3" id = "Algotype">Régression Linéaire</h6>
 
+<!-- Target Selection Selection -->
+<div class="mb-3">
+    <label class="form-label">Sélectionner le variable target </label>
+    <select class="form-select columnSelect">
+        <option value="">Sélectionner un fichier</option>
+    </select>
+</div>
+
 <!-- Split Parameters -->
 <div class="mb-3">
     <label class="form-label">Type de Split</label>
-    <select class="form-select" id="splitType">
+    <select class="form-select splitType">
+        <option value="">Select Split Type</option>
         <option value="train_test">Train/Test Split</option>
         <option value="k_fold">K-Fold</option>
     </select>
 </div>
-
-<div id="splitOptions">
-    <div class="mb-3 train-test-options">
+<div class="splitOptions">
+    <div class="mb-3 train-test-options" >
         <label class="form-label">Pourcentage Train/Test</label>
-        <select class="form-select" id="trainTestPercentage">
+        <select class="form-select splitOption1">
+            <option value="">Select Percentage</option>
             <option value="70_30">70% - 30%</option>
             <option value="80_20">80% - 20%</option>
             <option value="90_10">90% - 10%</option>
         </select>
     </div>
-    <div class="mb-3 k-fold-options" style="display: none;">
+    <div class="mb-3 k-fold-options" >
         <label class="form-label">Nombre de Folds (K-Fold)</label>
-        <select class="form-select" id="kFold">
+        <select class="form-select splitOption2">
+            <option value="">Select Number of Folds</option>
             <option value="3">3 Folds</option>
             <option value="5">5 Folds</option>
             <option value="10">10 Folds</option>
@@ -33,21 +43,24 @@
 <h6 class="mt-4">Préprocessing</h6>
 <div class="mb-3">
     <label class="form-label">Standardisation</label>
-    <select class="form-select" id="standardisation">
+    <select class="form-select standardisation">
+        <option value="">Non</option>
         <option value="yes">Oui</option>
-        <option value="no">Non</option>
+        
     </select>
 </div>
 <div class="mb-3">
     <label class="form-label">Gestion des valeurs manquantes</label>
-    <select class="form-select" id="missingValues">
+    <select class="form-select missingValues">
+        <option value="">Pas de Gestion de valeurs manquantes</option>
         <option value="mean">Remplacement par la moyenne</option>
         <option value="median">Remplacement par la médiane</option>
     </select>
 </div>
 <div class="mb-3">
     <label class="form-label">Encodage des variables catégoriques</label>
-    <select class="form-select" id="categoricalEncoding">
+    <select class="form-select categoricalEncoding">
+        <option value="">Select Encoding method </option>
         <option value="one_hot">One-Hot Encoding</option>
         <option value="label">Label Encoding</option>
     </select>
@@ -55,14 +68,16 @@
 
 <!-- Training Parameters -->
 <h6 class="mt-4">Entraînement</h6>
+
 <div class="mb-3">
     <label class="form-label">Recherche d'hyperparamètres</label>
-    <select class="form-select" id="hyperparameterSearch">
+    <select class="form-select hyperparam_selection">
         <option value="grid_search">Grid Search</option>
         <option value="random_search">Random Search</option>
         <option value="manual">Manuel</option>
     </select>
 </div>
+<div class="training_parameters" style="display: none;">
 <div class="mb-3">
     <label class="form-label">Inclure l'ordonnée à l'origine</label>
     <select class="form-select" id="includeIntercept">
@@ -79,11 +94,4 @@
         <option value="elasticnet">ElasticNet</option>
     </select>
 </div>
-
-<!-- Target Selection -->
-<div class="mb-3">
-    <label class="form-label">Sélectionner le variable target </label>
-    <select class="form-select" id="columnSelect">
-        <option value="">Sélectionner un fichier</option>
-    </select>
 </div>
