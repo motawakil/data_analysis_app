@@ -1,5 +1,6 @@
 # database/models.py
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -15,6 +16,8 @@ class User(db.Model):
 
 class Chart(db.Model):
     __tablename__ = 'charts'
+    
+
     
     # Define the columns (attributes) for this table
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -64,3 +67,19 @@ class Statistics(db.Model):
         self.quartiles = quartiles
         self.skewness = skewness
         self.kurtosis = kurtosis
+        
+
+class Files(db.Model):
+    __tablename__ = 'files'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    path = db.Column(db.String(255), nullable=False)
+    user = db.Column(db.String(255), nullable=False)
+    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, name, path, user, upload_date=None):
+        self.name = name
+        self.path = path
+        self.user = user
+        if upload_date:
+            self.upload_date = upload_date

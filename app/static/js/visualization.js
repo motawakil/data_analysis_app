@@ -18,14 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch available files
     const fetchFiles = async () => {
         try {
-            const response = await fetch('/visualization/get-files');
+            const username = document.getElementById('username').value;
+            const response = await fetch(`/visualization/get-files?username=${username}`);
             const files = await response.json();
             fileSelect.innerHTML = '<option value="">Sélectionner un fichier</option>';
             files.forEach(file => {
-                const option = document.createElement('option');
-                option.value = file.id;
-                option.textContent = file.name;
-                fileSelect.appendChild(option);
+                    const option = document.createElement('option');
+                    option.value = file.id;  // Full filename with username
+                    option.textContent = file.name;  // Display name without username
+                    fileSelect.appendChild(option);
                                    // Load statistics when the page loads
                                    document.addEventListener('DOMContentLoaded', loadStatistics);
             });

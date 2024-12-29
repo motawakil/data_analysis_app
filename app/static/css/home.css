@@ -1,0 +1,9 @@
+.hero-section {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+}
+.features-section {
+    background-color: #f8f9fa;
+}
+.card-title {
+    font-size: 1.25rem;
+}

@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Fetch available files 
         const fetchFiles = async () => {
             try {
-                const response = await fetch('/export/get-files');
+                const username = document.getElementById('username').value;
+                const response = await fetch(`/export/get-files?username=${username}`);
                 const files = await response.json();
                 fileSelect.innerHTML = '<option value="">Sélectionner un fichier</option>';
                 files.forEach(file => {
                     const option = document.createElement('option');
-                    option.value = file.id;
-                    option.textContent = file.name;
+                    option.value = file.id;  // Full filename with username
+                    option.textContent = file.name;  // Display name without username
                     fileSelect.appendChild(option);
                                        
                 });
