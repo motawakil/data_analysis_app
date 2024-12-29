@@ -113,6 +113,7 @@ def prepare_data():
             
         data = request.json['tableData']
         filename = request.json.get('filename')
+        username = request.json.get('username')
         print(filename)
         
         # Convert to DataFrame
@@ -124,11 +125,12 @@ def prepare_data():
         # Create data_saved directory 
         save_dir = os.path.join(current_app.static_folder,'data_saved')
     
+        print(username)
         
-        
-        # Save with custom filename
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        save_path = os.path.join(save_dir, f'{filename}.csv')
+        # Add username prefix to filename
+        save_filename = f"{username}_{filename}.csv"
+        #save_path = os.path.join(save_dir, f'{filename}.csv')
+        save_path = os.path.join(save_dir, save_filename)
         df.to_csv(save_path, index=False)
         
         # Preprocess data

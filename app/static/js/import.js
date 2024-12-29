@@ -565,6 +565,7 @@ document.getElementById('prepareDataButton').addEventListener('click', () => {
 
 document.getElementById('saveFileBtn').addEventListener('click', async () => {
     try {
+        const username = document.getElementById('hiddenUsername').value;
         const filename = document.getElementById('customFilename').value.trim();
         if (!filename) {
             alert('Veuillez entrer un nom de fichier');
@@ -581,7 +582,8 @@ document.getElementById('saveFileBtn').addEventListener('click', async () => {
             },
             body: JSON.stringify({
                 tableData: tableData,
-                filename: filename
+                filename: filename,
+                username: username
             })
         });
 
@@ -609,4 +611,3 @@ document.getElementById('saveFileBtn').addEventListener('click', async () => {
         alert('Erreur: ' + error.message);
     }
 });
-

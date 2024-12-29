@@ -15,12 +15,22 @@ visualization_bp = Blueprint('visualization', __name__)
 # Route to fetch the list of available files (GET)
 @visualization_bp.route('/get-files', methods=['GET'])
 def get_files():
+    username = request.args.get('username')
+    if not username:
+        return jsonify({'error': 'Username required'}), 400
     data_saved_path = os.path.join(current_app.static_folder, 'data_saved')
-    files = [
-        {'id': file, 'name': file}
-        for file in os.listdir(data_saved_path)
-        if file.endswith('.csv') and file != 'None.csv'
-    ] if os.path.exists(data_saved_path) else []
+    
+    files = []
+    
+    if os.path.exists(data_saved_path):
+        for file in os.listdir(data_saved_path):
+            if file.endswith('.csv') and file.startswith(f"{username}_") and file !='None_None.csv':
+                display_name = file.replace(f"{username}_", "")  # Remove username prefix
+                files.append({
+                    'id': file,
+                    'name': display_name
+                })
+    
     return jsonify(files)
 # Route to fetch the columns of a specific CSV file (GET)
 @visualization_bp.route('/get-columns', methods=['GET'])
@@ -373,4 +383,3 @@ def delete_statistic(stat_id):
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
